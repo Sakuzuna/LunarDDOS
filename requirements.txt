@@ -1,0 +1,7 @@
+pysocks
+requests
+pystyle
+Pillow
+colorama
+opencv-python
+numpy
