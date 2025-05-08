@@ -196,7 +196,7 @@ def bannerm2():
     print(Colorate.Horizontal(Colors.cyan_to_blue, Center.XCenter(banner2)))
 
 def bannerm():
-    cuser = input(Colorate.Horizontal(Colors.cyan_to_blue, "Username  ➤ "))
+    cuser = input(Colorate.Horizontal(Colors.cyan_to_blue, "Username  ➤  "))
     if os.name == 'nt':
         os.system('cls')
     else:
@@ -1403,11 +1403,12 @@ def parse_discord_link(link):
 def Launch(method, url, threads, duration, proxy_type, port=None):
     global target, path, protocol, proxies
     event = threading.Event()
+    play_ascii_video("banner.mp4", duration=2.5)
     clearcs()
 
     if not load_proxies():
         return False
-
+    
     print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "             ╦  ╦ ╦╔╗╔╔═╗╦═╗")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "             ║  ║ ║║║║╠═╣╠╦╝")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "             ╩═╝╚═╝╝╚╝╩ ╩╩╚═𝔁𝓭")}
@@ -1416,7 +1417,7 @@ def Launch(method, url, threads, duration, proxy_type, port=None):
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴀᴛᴛᴀᴄᴋ ꜱᴜᴍᴍᴀʀʏ
 {Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "🎯  ➤")}  {(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'h2-blast', 'h2-bypass', 'h2-godly', 'h2-hold', 'starxbypass'] else url).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴍᴏᴅᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⚙️     ➤")}  {method.ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴍᴏᴅᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⚙️    ➤")}  {method.ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⌛    ➤")}  {str(duration).ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "⚔   ➤")}  {str(threads).ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴘʀᴏxʏ ᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "⦻  ➤")}  {str(proxy_type).ljust(30)}
@@ -1434,6 +1435,8 @@ def Launch(method, url, threads, duration, proxy_type, port=None):
     elif method == "discord":
         target_ip, target_port = parse_discord_link(url)
         if not target_ip:
+            play_ascii_video("banner.mp4", duration=2.5)
+            clearcs()
             print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid Discord link or unable to resolve voice server."))
             return False
         target_port = port if port else target_port
@@ -1456,12 +1459,15 @@ def main():
     bannerm()
     while True:
         try:
-            command = input(Colorate.Horizontal(Colors.cyan_to_blue, "LunarXD ➤ ")).strip().lower()
+            command = input(Colorate.Horizontal(Colors.cyan_to_blue, """┌─[ʟᴜɴᴀʀxᴅ]─[~]
+└──╼ ➤  """)).strip().lower()
             args = command.split()
             if not args:
                 continue
             cmd = args[0]
             if cmd == "help":
+                play_ascii_video("banner.mp4", duration=2.5)
+                clearcs()
                 print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("COMMANDS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
 
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}exit              {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Exit the tool
@@ -1484,6 +1490,8 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .connect                                                    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Minecraft bot flood with GUI interface [Just input .connect]
 """)
             elif cmd == "methods":
+                play_ascii_video("banner.mp4", duration=2.5)
+                clearcs()
                 print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("L4 METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
 
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}udpflood    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   High-intensity UDP flood with variable packet size and spoofed source to saturate bandwidth.                           {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
@@ -1498,24 +1506,27 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}cc          {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP GET flood with randomized URLs to bypass caching mechanisms.                                                      {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}post        {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP POST flood with large payloads to consume server processing power.                                                {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}head        {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP HEAD flood to overload server response handling.                                                                  {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}uambypass   {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP flood with randomized user-agents and IPs to mimic legitimate traffic.                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}browser     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Simulates browser-like HTTP requests with session persistence to stress application layers.                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}home        {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Targets home pages with spoofed IPs to overwhelm front-end servers.                                                    {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}cfbypass    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Attempts to bypass Cloudflare protections with dynamic headers and cookies.                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}tls         {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   TLS handshake flood with modern ciphers to exhaust SSL/TLS resources.                                                  {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}ovh         {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Targets OVH-hosted servers with customized HTTP requests to bypass protections.                                        {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}dgb         {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Floods with anti-DDoS bypass headers to target specific protections.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}http-storm  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Multi-method HTTP flood (GET/HEAD/OPTIONS) to overwhelm web servers.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}api-killer  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Targets API endpoints with JSON payloads to overload backend processing.                                               {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+
+{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("L7 BYPASS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
+
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-blast    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 flood with randomized headers to exploit protocol efficiency.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-bypass   {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 requests designed to bypass common DDoS protections.                                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-godly    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Aggressive HTTP/2 flood with multiple methods to maximize server load.                                                 {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-hold     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 connection hold to maintain open connections and exhaust server resources.                                       {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-hold     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 connection hold to maintain open connections and exhaust server resources.                                      {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}starxbypass {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 flood with headers to bypass StarX-specific protections.                                                        {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}ovh         {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Targets OVH-hosted servers with customized HTTP requests to bypass protections.                                        {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}dgb         {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Floods with anti-DDoS bypass headers to target specific protections.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}cfbypass    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Attempts to bypass Cloudflare protections with dynamic headers and cookies.                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}uambypass   {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP flood with randomized user-agents and IPs to mimic legitimate traffic.                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 
 {Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("GAME METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
 
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}game-crash  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Sends malformed packets to crash game server protocols.                                                                 {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}game-crash  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Sends malformed packets to crash game server protocols.                                                                {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}lobby-flood {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Floods game server lobbies with connection requests to prevent matchmaking.                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 
 {Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("SPECIAL METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
@@ -1524,12 +1535,15 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}connect     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Minecraft bot flood with GUI interface for server stress testing.                                                      {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 """)
             elif cmd == "clear":
+                play_ascii_video("banner.mp4", duration=2.5)
                 clearcs()
                 bannerm2()
             elif cmd == "exit":
+                play_ascii_video("banner.mp4", duration=2.5)
                 print(Colorate.Horizontal(Colors.cyan_to_blue, "> Exiting LunarXD..."))
                 sys.exit(0)
             elif cmd == "menu":
+                play_ascii_video("banner.mp4", duration=2.5)
                 clearcs()
                 bannerm()
             elif cmd == ".l4" and len(args) >= 6:
@@ -1540,12 +1554,16 @@ def main():
                     duration = int(args[4])
                     port = int(args[5]) if len(args) > 5 else None
                 except ValueError:
+                    play_ascii_video("banner.mp4", duration=2.5)
+                    clearcs()
                     print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads, duration, and port must be integers."))
                     continue
                 proxy_type = int(proxy_ver) if proxy_ver in ["4", "5", "0"] else 5
                 if method in ["udpflood", "tcpflood", "dns", "udp-kill", "icmp-blast", "syn-strike"]:
                     Launch(method, ip_port, threads, duration, proxy_type, port)
                 else:
+                    play_ascii_video("banner.mp4", duration=2.5)
+                    clearcs()
                     print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid L4 method. Use 'methods' to see available options."))
             elif cmd == ".l7" and len(args) >= 6:
                 method = args[1].lower()
@@ -1555,12 +1573,16 @@ def main():
                     duration = int(args[4])
                     port = int(args[5]) if len(args) > 5 else None
                 except ValueError:
+                    play_ascii_video("banner.mp4", duration=2.5)
+                    clearcs()
                     print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads, duration, and port must be integers."))
                     continue
                 proxy_type = int(proxy_ver) if proxy_ver in ["4", "5", "0"] else 5
                 if method in ["cc", "post", "head", "uambypass", "browser", "home", "cfbypass", "tls", "ovh", "dgb", "http-storm", "api-killer", "h2-blast", "h2-bypass", "h2-godly", "h2-hold", "starxbypass"]:
                     Launch(method, url, threads, duration, proxy_type, port)
                 else:
+                    play_ascii_video("banner.mp4", duration=2.5)
+                    clearcs()
                     print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid L7 method. Use 'methods' to see available options."))
             elif cmd == ".game" and len(args) >= 6:
                 method = args[1].lower()
@@ -1570,12 +1592,16 @@ def main():
                     duration = int(args[4])
                     port = int(args[5]) if len(args) > 5 else None
                 except ValueError:
+                    play_ascii_video("banner.mp4", duration=2.5)
+                    clearcs()
                     print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads, duration, and port must be integers."))
                     continue
                 proxy_type = int(proxy_ver) if proxy_ver in ["4", "5", "0"] else 5
                 if method in ["game-crash", "lobby-flood"]:
                     Launch(method, ip_port, threads, duration, proxy_type, port)
                 else:
+                    play_ascii_video("banner.mp4", duration=2.5)
+                    clearcs()
                     print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid game method. Use 'methods' to see available options."))
             elif cmd == ".discord" and len(args) >= 5:
                 link = args[1]
@@ -1584,18 +1610,27 @@ def main():
                     duration = int(args[3])
                     port = int(args[4]) if len(args) > 4 else None
                 except ValueError:
+                    clearcs()
                     print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads, duration, and port must be integers."))
                     continue
                 proxy_type = int(proxy_ver) if proxy_ver in ["4", "5", "0"] else 5
                 Launch("discord", link, threads, duration, proxy_type, port)
             elif cmd == ".connect":
+                play_ascii_video("banner.mp4", duration=2.5)
+                clearcs()
                 print(Colorate.Horizontal(Colors.cyan_to_blue, "> Minecraft bot flood not implemented in this version."))
             else:
+                play_ascii_video("banner.mp4", duration=2.5)
+                clearcs()
                 print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid command. Type 'HELP' for usage."))
         except KeyboardInterrupt:
+            play_ascii_video("banner.mp4", duration=2.5)
+            clearcs()
             print(Colorate.Horizontal(Colors.cyan_to_blue, "\n> Interrupted by user."))
             continue
         except Exception as e:
+            play_ascii_video("banner.mp4", duration=2.5)
+            clearcs()
             print(Colorate.Horizontal(Colors.cyan_to_blue, f"> Error: {e}"))
 
 if __name__ == "__main__":
