@@ -1358,6 +1358,10 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                ║  [●]")} {white}api-killer {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                 ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "             ║")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "═╩═════════════════╩═════════════════╩═════════════════╩═════════════════╩══════════════════╩══════════════╩═")}
 """)
+
+        elif command == "plsletmego":
+            exit()
+        
         elif command == "menu":
             bannerm2()
 
