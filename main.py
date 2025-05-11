@@ -40,6 +40,7 @@ COLOR_CODE = {
 }
 
 red = Fore.RED
+blue = Fore.BLUE
 green = Fore.GREEN
 reset = Fore.RESET
 white = Fore.WHITE
@@ -1257,15 +1258,15 @@ def Launch(method, url, threads, duration, proxy_type, port=None):
     if not load_proxies():
         return False
 
-    print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "             ╦  ╦ ╦╔╗╔╔═╗╦═╗")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "             ║  ║ ║║║║╠═╣╠╦╝")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "             ╩═╝╚═╝╝╚╝╩ ╩╩╚═𝔁𝓭")}
+    print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "             ╔═╗╔╦╗╔╦╗╔═╗╔═╗╦╔═")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "             ╠═╣ ║  ║ ╠═╣║  ╠╩╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "             ╩ ╩ ╩  ╩ ╩ ╩╚═╝╩ ╩")}
 {white}  ⏾⋆.˚ 𝓐𝓽𝓽𝓪𝓬𝓴 𝔀𝓪𝓼 𝓼𝓮𝓷𝓽 𝓼𝓾𝓬𝓬𝓮𝓼𝓼𝓯𝓾𝓵𝓵𝔂! ⏾⋆.˚
 {Colorate.Horizontal(Colors.cyan_to_blue, "┌───────────────────────────────────────────┐")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴀᴛᴛᴀᴄᴋ ꜱᴜᴍᴍᴀʀʏ
 {Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "🎯  ➤")}  {(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'kill'] else url).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴍᴏᴅᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⚙️     ➤")}  {method.ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴍᴏᴅᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⚙️    ➤")}  {method.ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⌛    ➤")}  {str(duration).ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "⚔   ➤")}  {str(threads).ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴘʀᴏxʏ ᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "⦻  ➤")}  {str(proxy_type).ljust(30)}
@@ -1324,82 +1325,39 @@ def main():
             else:
                 try:
                     clearcs()
-                    play_ascii_video("banner.mp4", duration=2.5)
+                    play_ascii_video("sent.mp4", duration=2.5)
                 except:
                     runbanner()
 
         if command == "help":
-            print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("COMMANDS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}exit              {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Exit the tool
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}HELP              {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Show this help message
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}methods           {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   List available attack methods
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}menu              {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Return to the main menu
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("L4 METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .l4 <method> <ip>[:port] <threads> <duration> [port]        {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Run LAYER4 attack
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("L7 METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .l7 <method> <url> <threads> <duration> [port]              {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Run LAYER7 attack
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("H2 METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .h2 <method> <url> <time> <rate> <threads>                  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Run HTTP/2 attack
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("GAME METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .game <method> <ip>[:port] <threads> <duration> [port]      {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Run GAME attack
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .discord <link> <threads> <duration> [port]                 {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Run DISCORD tcp flood
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}  .connect                                                    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Minecraft bot flood with GUI interface [Just input .connect]
+            print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "                                   ╦ ╦╔═╗╦  ╔═╗  ╔═╗╔═╗╔╦╗╔╦╗╔═╗╔╗╔╔╦╗╔═╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "                                   ╠═╣║╣ ║  ╠═╝  ║  ║ ║║║║║║║╠═╣║║║ ║║╚═╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "                                   ╩ ╩╚═╝╩═╝╩    ╚═╝╚═╝╩ ╩╩ ╩╩ ╩╝╚╝═╩╝╚═╝")}
+{white}                                       ⏾⋆.˚ 𝓑𝓮𝓼𝓽 𝓯𝓻𝓮𝓮 𝓭𝓭𝓸𝓼 𝓽𝓸𝓸𝓵   ⏾⋆.˚
+{Colorate.Horizontal(Colors.cyan_to_blue, "     ═╦══════════════════════════════╦══╦═════════════════════════════════════════════════════════╦═")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] exit ➤ Exit the tool {Colorate.Horizontal(Colors.cyan_to_blue, "    ║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}L4 {white}➤ .l4 <method> <ip> <threads> <duration> <port> {Colorate.Horizontal(Colors.cyan_to_blue, " ║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] help ➤ Show help message {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}L7 {white}➤ .l7 <method> <url> <threads> <duration> <port> {Colorate.Horizontal(Colors.cyan_to_blue, "║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] methods ➤ List methods   {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}H2 {white}➤ .h2 <method> <url> <time> <rate> <threads> {Colorate.Horizontal(Colors.cyan_to_blue, "    ║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] menu ➤ Show the menu     {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}GM {white}➤ .game <method> <ip> <threads> <time> <port> {Colorate.Horizontal(Colors.cyan_to_blue, "   ║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "     ═╩══════════════════════════════╩══╩═════════════════════════════════════════════════════════╩═")}
 """)
 
         elif command == "methods":
-            print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("L4 METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}udpflood    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   High-intensity UDP flood with variable packet size and spoofed source to saturate bandwidth.                           {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}tcpflood    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Aggressive TCP flood with SYN and data packets to exhaust connection limits and resources.                             {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}dns         {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Sophisticated DNS flood with randomized queries to overwhelm DNS servers.                                              {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}udp-kill    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Extreme UDP flood with large payloads to disrupt network stability.                                                    {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}icmp-blast  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   ICMP flood with spoofed sources to overload network interfaces.                                                        {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}syn-strike  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   SYN flood with randomized source IPs to exhaust server connection tables.                                              {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("L7 METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}cc          {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP GET flood with randomized URLs to bypass caching mechanisms.                                                      {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}kill        {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Optimized HTTP GET flood for high request rates. Aiming for 50-100k RPS.                                               {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}post        {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP POST flood with large payloads to consume server processing power.                                                {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}head        {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP HEAD flood to overload server response handling.                                                                  {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}uambypass   {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP flood with randomized user-agents and IPs to mimic legitimate traffic.                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}browser     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Simulates browser-like HTTP requests with session persistence to stress application layers.                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}home        {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Targets home pages with spoofed IPs to overwhelm front-end servers.                                                    {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}cfbypass    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Attempts to bypass Cloudflare protections with dynamic headers and cookies.                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}tls         {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   TLS handshake flood with modern ciphers to exhaust SSL/TLS resources.                                                  {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}ovh         {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Targets OVH-hosted servers with customized HTTP requests to bypass protections.                                        {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}dgb         {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Floods with anti-DDoS bypass headers to target specific protections.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}http-storm  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Multi-method HTTP flood (GET/HEAD/OPTIONS) to overwhelm web servers.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}api-killer  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Targets API endpoints with JSON payloads to overload backend processing.                                               {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("H2 METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-bypass   {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 flood with randomized headers to bypass protections like Cloudflare.                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-blast    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   High-intensity HTTP/2 flood to overwhelm server resources.                                                             {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-hold     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 flood with memory management to sustain long attacks.                                                           {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}h2-godly    {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Advanced HTTP/2 flood with optimized performance for maximum impact.                                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}starxbypass {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   HTTP/2 flood with extensive header randomization and IP spoofing to bypass defenses.                                   {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("GAME METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}game-crash  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Sends malformed packets to crash game server protocols.                                                                {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}lobby-flood {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Floods game server lobbies with connection requests to prevent matchmaking.                                            {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "[")} {yellow_to_white("SPECIAL METHODS")} {Colorate.Horizontal(Colors.cyan_to_blue, "]")}
-
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}discord     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Floods Discord voice servers with TCP packets to disrupt communication.                                                {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┃")}  {white}connect     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}   Minecraft bot flood with GUI interface for server stress testing.                                                      {Colorate.Horizontal(Colors.cyan_to_blue, "PERMISSION:")}  {gray_to_white("[")}{green_to_white("FREE")}{gray_to_white("]")}
+            print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "                                          ╔╦╗╔═╗╔╦╗╦ ╦╔═╗╔╦╗╔═╗")} 
+{Colorate.Horizontal(Colors.cyan_to_blue, "                                          ║║║║╣  ║ ╠═╣║ ║ ║║╚═╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "                                          ╩ ╩╚═╝ ╩ ╩ ╩╚═╝═╩╝╚═╝")}
+{white}                                     ⏾⋆.˚ 𝓑𝓮𝓼𝓽 𝓯𝓻𝓮𝓮 𝓭𝓭𝓸𝓼 𝓽𝓸𝓸𝓵   ⏾⋆.˚
+{Colorate.Horizontal(Colors.cyan_to_blue, "       ʟᴀʏᴇʀ 4           ʟᴀʏᴇʀ 7         ʟᴀʏᴇʀ 7 ᴘᴛ.2         ʜᴛᴛᴘ/2            ɢᴀᴍᴇ            ꜱᴘᴇᴄɪᴀʟ")}    
+{Colorate.Horizontal(Colors.cyan_to_blue, "╚╦═════════════════╦═════════════════╦═════════════════╦═════════════════╦══════════════════╦══════════════╦╝")}
+{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}udpflood    {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}cc         {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}home       {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}h2-bypass  {Colorate.Horizontal(Colors.cyan_to_blue, "║ [●]")} {white}game-crash   {Colorate.Horizontal(Colors.cyan_to_blue, "║ [●]")} {white}discord  {Colorate.Horizontal(Colors.cyan_to_blue, "║")}          
+{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}tcpflood    {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}kill       {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}cfbypass   {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}h2-blast   {Colorate.Horizontal(Colors.cyan_to_blue, "║ [●]")} {white}lobby-flood  {Colorate.Horizontal(Colors.cyan_to_blue, "║ [●]")} {white}connect  {Colorate.Horizontal(Colors.cyan_to_blue, "║")}          
+{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}dns         {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}post       {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}tls        {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}h2-hold    {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                 ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "             ║")} 
+{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}udp-kill    {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}head       {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}ovh        {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}h2-godly   {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                 ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "             ║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}icmp-blast  {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}uambypass  {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}dgb        {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}starxbypass{Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                 ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "             ║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}syn-strike  {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}browser    {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}http-storm {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                 ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "             ║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                ║  [●]")} {white}api-killer {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                 ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "             ║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "═╩═════════════════╩═════════════════╩═════════════════╩═════════════════╩══════════════════╩══════════════╩═")}
 """)
-
         elif command == "menu":
             bannerm2()
 
@@ -1543,7 +1501,8 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ɢɪᴛʜᴜʙ     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://github.com/Sakuzuna/
 {Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴄʜᴇᴄᴋʜᴏꜱᴛ  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://check-host.net/check-http?host={url}
-{Colorate.Horizontal(Colors.cyan_to_blue, "└───────────────────────────────────────────┘")}""")
+{Colorate.Horizontal(Colors.cyan_to_blue, "└───────────────────────────────────────────┘")}
+""")
 
                 # Run the attack using subprocess
                 try:
