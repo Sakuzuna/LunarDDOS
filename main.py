@@ -1525,13 +1525,6 @@ def main():
 
         else:
             print(Colorate.Horizontal(Colors.cyan_to_blue, "> Unknown command. Type 'help' for a list of commands."))
-            
-def make_unkillable():
-    signal.signal(signal.SIGINT, signal.SIG_IGN)
-    signal.signal(signal.SIGTSTP, signal.SIG_IGN)
-    signal.signal(signal.SIGTERM, signal.SIG_IGN)
 
 if __name__ == "__main__":
-    while True:
-        time.sleep(1)
     main()
