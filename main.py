@@ -1326,6 +1326,7 @@ def main():
                 try:
                     clearcs()
                     play_ascii_video("sent.mp4", duration=2.5)
+                    clearcs()
                 except:
                     runbanner()
 
