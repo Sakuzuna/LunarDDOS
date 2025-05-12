@@ -1336,7 +1336,7 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, "                                   ╩ ╩╚═╝╩═╝╩    ╚═╝╚═╝╩ ╩╩ ╩╩ ╩╝╚╝═╩╝╚═╝")}
 {white}                                       ⏾⋆.˚ 𝓑𝓮𝓼𝓽 𝓯𝓻𝓮𝓮 𝓭𝓭𝓸𝓼 𝓽𝓸𝓸𝓵   ⏾⋆.˚
 {Colorate.Horizontal(Colors.cyan_to_blue, "     ═╦══════════════════════════════╦══╦═════════════════════════════════════════════════════════╦═")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] exit ➤ Exit the tool {Colorate.Horizontal(Colors.cyan_to_blue, "    ║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}L4 {white}➤ .l4 <method> <ip> <threads> <duration> <port> {Colorate.Horizontal(Colors.cyan_to_blue, " ║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] secret ➤ Exit        {Colorate.Horizontal(Colors.cyan_to_blue, "    ║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}L4 {white}➤ .l4 <method> <ip> <threads> <duration> <port> {Colorate.Horizontal(Colors.cyan_to_blue, " ║")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] help ➤ Show help message {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}L7 {white}➤ .l7 <method> <url> <threads> <duration> <port> {Colorate.Horizontal(Colors.cyan_to_blue, "║")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] methods ➤ List methods   {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}H2 {white}➤ .h2 <method> <url> <time> <rate> <threads> {Colorate.Horizontal(Colors.cyan_to_blue, "    ║")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] menu ➤ Show the menu     {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}GM {white}➤ .game <method> <ip> <threads> <time> <port> {Colorate.Horizontal(Colors.cyan_to_blue, "   ║")}
@@ -1365,10 +1365,6 @@ def main():
         
         elif command == "menu":
             bannerm2()
-
-        elif command == "exit":
-            print(Colorate.Horizontal(Colors.cyan_to_blue, "> Exiting LunarXD."))
-            sys.exit()
 
         elif command == "connect":
             print(Colorate.Horizontal(Colors.cyan_to_blue, "> Launching Minecraft bot flood GUI..."))
