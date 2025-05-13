@@ -183,13 +183,13 @@ def bannerm2():
              ╦  ╦ ╦╔╗╔╔═╗╦═╗
              ║  ║ ║║║║╠═╣╠╦╝
              ╩═╝╚═╝╝╚╝╩ ╩╩╚═𝔁𝓭
-       ⏾⋆.˚ 𝓑𝓮𝓼𝓽 𝓯𝓻𝓮𝓮 𝓭𝓭𝓸𝓼 𝓽𝓸𝓸𝓵   ⏾⋆.˚
+  ⋆.˚ ☾ .⭒˚ 𝓑𝓮𝓼𝓽 𝓬𝓱𝓮𝓪𝓹 𝓼𝓽𝓻𝓮𝓼𝓼𝓮𝓻 ⋆.˚ ☾ .⭒˚
    ╔═══════════════════════════════════╗
    ‖ ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ʟᴜɴᴀʀxᴅ, ʙʏ ʟᴜɴᴀʀʟᴅᴅᴏꜱ ‖
    ‖   ᴛʏᴘᴇ "ʜᴇʟᴘ" ᴛᴏ ʟɪꜱᴛ ᴄᴏᴍᴍᴀɴᴅꜱ    ‖
    ╚═══════════════════════════════════╝
 
- ⏾⋆.˚ 𝓙𝓸𝓲𝓻    𝓱𝓽𝓽𝓹𝓼://𝓽.𝓶𝓮/𝓫𝓲𝓸𝓼𝓶𝓸𝓼𝓷𝓽𝓻  ⏾⋆.˚
+   𝓱𝓽𝓽𝓹𝓼://𝓽.𝓶𝓮/+𝓴5𝓯𝓺𝓪𝓨𝓐𝓡𝓩𝓠𝓥𝓵𝓝𝓓𝓩𝓴
  ╔═══════════════════════════════════════╗
  ‖   ᴄᴏᴘʏʀɪɢʜᴛ © 2025 ʀɪɢʜᴛꜱ ʀᴇꜱᴇʀᴠᴇᴅ    ‖
  ╚═══════════════════════════════════════╝
@@ -208,13 +208,13 @@ def bannerm():
              ╦  ╦ ╦╔╗╔╔═╗╦═╗
              ║  ║ ║║║║╠═╣╠╦╝
              ╩═╝╚═╝╝╚╝╩ ╩╩╚═𝔁𝓭
-       ⏾⋆.˚ 𝓑𝓮𝓼𝓽 𝓯𝓻𝓮𝓮 𝓭𝓭𝓸𝓼 𝓽𝓸𝓸𝓵   ⏾⋆.˚
+  ⋆.˚ ☾ .⭒˚ 𝓑𝓮𝓼𝓽 𝓬𝓱𝓮𝓪𝓹 𝓼𝓽𝓻𝓮𝓼𝓼𝓮𝓻 ⋆.˚ ☾ .⭒˚
    ╔═══════════════════════════════════╗
    ‖ ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ʟᴜɴᴀʀxᴅ, ʙʏ ʟᴜɴᴀʀʟᴅᴅᴏꜱ ‖
    ‖   ᴛʏᴘᴇ "ʜᴇʟᴘ" ᴛᴏ ʟɪꜱᴛ ᴄᴏᴍᴍᴀɴᴅꜱ    ‖
    ╚═══════════════════════════════════╝
 
- ⏾⋆.˚ 𝓙𝓸𝓲𝓻    𝓱𝓽𝓽𝓹𝓼://𝓽.𝓶𝓮/𝓫𝓲𝓸𝓼𝓶𝓸𝓼𝓷𝓽𝓻  ⏾⋆.˚
+   𝓱𝓽𝓽𝓹𝓼://𝓽.𝓶𝓮/+𝓴5𝓯𝓺𝓪𝓨𝓐𝓡𝓩𝓠𝓥𝓵𝓝𝓓𝓩𝓴
  ╔═══════════════════════════════════════╗
  ‖   ᴄᴏᴘʏʀɪɢʜᴛ © 2025 ʀɪɢʜᴛꜱ ʀᴇꜱᴇʀᴠᴇᴅ    ‖
  ╚═══════════════════════════════════════╝
@@ -1261,20 +1261,20 @@ def Launch(method, url, threads, duration, proxy_type, port=None):
     print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "             ╔═╗╔╦╗╔╦╗╔═╗╔═╗╦╔═")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "             ╠═╣ ║  ║ ╠═╣║  ╠╩╗")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "             ╩ ╩ ╩  ╩ ╩ ╩╚═╝╩ ╩")}
-{white}  ⏾⋆.˚ 𝓐𝓽𝓽𝓪𝓬𝓴 𝔀𝓪𝓼 𝓼𝓮𝓷𝓽 𝓼𝓾𝓬𝓬𝓮𝓼𝓼𝓯𝓾𝓵𝓵𝔂! ⏾⋆.˚
-{Colorate.Horizontal(Colors.cyan_to_blue, "┌───────────────────────────────────────────┐")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴀᴛᴛᴀᴄᴋ ꜱᴜᴍᴍᴀʀʏ
-{Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "🎯  ➤")}  {(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'kill'] else url).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴍᴏᴅᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⚙️    ➤")}  {method.ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⌛    ➤")}  {str(duration).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "⚔   ➤")}  {str(threads).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴘʀᴏxʏ ᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "⦻  ➤")}  {str(proxy_type).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴘʀᴏxʏ ꜰ {Colorate.Horizontal(Colors.cyan_to_blue, "☣  ➤")}  {out_file.ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ɢɪᴛʜᴜʙ     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://github.com/Sakuzuna/
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴄʜᴇᴄᴋʜᴏꜱᴛ  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://check-host.net/check-http?host={(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'kill'] else url)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "└───────────────────────────────────────────┘")}""")
+{white}  ⋆.˚ ☾ .⭒˚ 𝓑𝓮𝓼𝓽 𝓬𝓱𝓮𝓪𝓹 𝓼𝓽𝓻𝓮𝓼𝓼𝓮𝓻 ⋆.˚ ☾ .⭒˚
+{Colorate.Horizontal(Colors.cyan_to_blue, "╔═══════════════════════════════════════════╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║")} {white}𝓐𝓽𝓽𝓪𝓬𝓴 𝓢𝓾𝓶𝓶𝓪𝓻𝔂                         ║
+{Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╦═══════════════════════════════════════╣")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "   ➤")}  {("["url"]" if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'kill'] else url).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴍᴇᴛʜᴏᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "   ➤")}  {"["method"]".ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴘᴏʀᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "     ➤")}  {str("["port"]").ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "     ➤")}  {str("["duration"]").ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {str("["threads"]").ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╬═══════════════════════════════════════╣")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴀᴄᴄᴇꜱꜱ     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  VIP
+{Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╬═══════════════════════════════════════╣")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴄʜᴇᴄᴋʜᴏꜱᴛ  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://check-host.net/check-http?host={(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'kill'] else url)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "╚═══╩═══════════════════════════════════════╝")}""")
 
     if method in ["udpflood", "tcpflood", "dns", "udp-kill", "icmp-blast", "syn-strike", "game-crash", "lobby-flood"]:
         if not ParseUrl(url, is_layer4=True):
