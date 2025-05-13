@@ -1263,13 +1263,13 @@ def Launch(method, url, threads, duration, proxy_type, port=None):
 {Colorate.Horizontal(Colors.cyan_to_blue, "             ╩ ╩ ╩  ╩ ╩ ╩╚═╝╩ ╩")}
 {white}  ⋆.˚ ☾ .⭒˚ 𝓑𝓮𝓼𝓽 𝓬𝓱𝓮𝓪𝓹 𝓼𝓽𝓻𝓮𝓼𝓼𝓮𝓻 ⋆.˚ ☾ .⭒˚
 {Colorate.Horizontal(Colors.cyan_to_blue, "╔═══════════════════════════════════════════╗")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "║")} {white}𝓐𝓽𝓽𝓪𝓬𝓴 𝓢𝓾𝓶𝓶𝓪𝓻𝔂                         ║
+{Colorate.Horizontal(Colors.cyan_to_blue, "║")} {white}𝓐𝓽𝓽𝓪𝓬𝓴 𝓢𝓾𝓶𝓶𝓪𝓻𝔂 {Colorate.Horizontal(Colors.cyan_to_blue, "              ║")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╦═══════════════════════════════════════╣")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "   ➤")}  {("["url"]" if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'kill'] else url).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴍᴇᴛʜᴏᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "   ➤")}  {"["method"]".ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴘᴏʀᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "     ➤")}  {str("["port"]").ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "     ➤")}  {str("["duration"]").ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {str("["threads"]").ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'kill'] else url).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴍᴇᴛʜᴏᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {method.ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴘᴏʀᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "      ➤")}  {str(port).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "      ➤")}  {str(duration).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {str(threads).ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╬═══════════════════════════════════════╣")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴀᴄᴄᴇꜱꜱ     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  VIP
 {Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╬═══════════════════════════════════════╣")}
