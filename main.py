@@ -1594,8 +1594,7 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╦═══════════════════════════════════════╣")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'kill'] else url).ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴍᴇᴛʜᴏᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {method.ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴘᴏʀᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "      ➤")}  {str(port).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "      ➤")}  {str(duration).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "      ➤")}  {str(time_duration).ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {str(threads).ljust(30)}
 {Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╬═══════════════════════════════════════╣")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴀᴄᴄᴇꜱꜱ     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  VIP
