@@ -1464,7 +1464,7 @@ def main():
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_pink(" Telegram Channel:")}  {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".h2 starxbypass")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_white(" LunarSTRESS.t.me")}   {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("╠════════════════════════════════════════════════════════╬═══════════════════════╣")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("╠══════════════════════╣")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[GAME]                                                 ")}{cyan_to_blue("‖")} {gold_to_white("                      ")}{cyan_to_blue("‖")}
-{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_pink("  Socials: ₊⁺☀︎₊⁺")}    {cyan_to_blue("║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".game game-crash ")}{cyan_to_pink("<ip> <threads> <duration> <port>")} {cyan_to_blue(" ‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_pink("  Socials: ₊⁺☀︎₊⁺")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".game game-crash ")}{cyan_to_pink("<ip> <threads> <duration> <port>")} {cyan_to_blue(" ‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {gold_to_white("  TT: @neonworid")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".game lobby-flood")}{cyan_to_pink("<ip> <threads> <duration> <port>")} {cyan_to_blue(" ‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {gold_to_white("  TG: @neonworid")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("╠════════════════════════════════════════════════════════╬═══════════════════════╣")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {gold_to_white("  TGC: @cursenet")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[MC]                                                   ")}{cyan_to_blue("‖")} {gold_to_white("                      ")}{cyan_to_blue("‖")}
@@ -1643,4 +1643,6 @@ def main():
             print(Colorate.Horizontal(Colors.cyan_to_blue, "> Unknown command. Type 'help' for a list of commands."))
 
 if __name__ == "__main__":
+    play_ascii_video("log.mp4", duration=3)
+    clearcs()
     main()
