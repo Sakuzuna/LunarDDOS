@@ -113,6 +113,78 @@ def play_ascii_video(video_path, frame_delay=1/128, duration=2.5):
     cap.release()
     return True
 
+def gray(text):
+    color = (128, 128, 128)  # Solid Gray
+    gradient = ""
+    for char in text:
+        gradient += f"\033[38;2;{color[0]};{color[1]};{color[2]}m{char}"
+    gradient += "\033[0m"
+    return gradient
+
+def blue(text):
+    color = (0, 0, 255)  # Solid Blue
+    gradient = ""
+    for char in text:
+        gradient += f"\033[38;2;{color[0]};{color[1]};{color[2]}m{char}"
+    gradient += "\033[0m"
+    return gradient
+
+def pink(text):
+    color = (255, 105, 180)  # Solid Pink
+    gradient = ""
+    for char in text:
+        gradient += f"\033[38;2;{color[0]};{color[1]};{color[2]}m{char}"
+    gradient += "\033[0m"
+    return gradient
+
+def cyan_to_blue(text):
+    start_color = (0, 255, 255)  # Cyan
+    end_color = (0, 0, 255)      # Blue
+    gradient = ""
+    for i, char in enumerate(text):
+        r = int(start_color[0] + (end_color[0] - start_color[0]) * (i / len(text)))
+        g = int(start_color[1] + (end_color[1] - start_color[1]) * (i / len(text)))
+        b = int(start_color[2] + (end_color[2] - start_color[2]) * (i / len(text)))
+        gradient += f"\033[38;2;{r};{g};{b}m{char}"
+    gradient += "\033[0m"
+    return gradient
+
+def cyan_to_pink(text):
+    start_color = (0, 255, 255)  # Cyan
+    end_color = (255, 105, 180)  # Pink
+    gradient = ""
+    for i, char in enumerate(text):
+        r = int(start_color[0] + (end_color[0] - start_color[0]) * (i / len(text)))
+        g = int(start_color[1] + (end_color[1] - start_color[1]) * (i / len(text)))
+        b = int(start_color[2] + (end_color[2] - start_color[2]) * (i / len(text)))
+        gradient += f"\033[38;2;{r};{g};{b}m{char}"
+    gradient += "\033[0m"
+    return gradient
+
+def gold_to_white(text):
+    start_color = (255, 215, 0)  # Rich Gold
+    end_color = (255, 255, 255)  # White
+    gradient = ""
+    for i, char in enumerate(text):
+        r = int(start_color[0] + (end_color[0] - start_color[0]) * (i / len(text)))
+        g = int(start_color[1] + (end_color[1] - start_color[1]) * (i / len(text)))
+        b = int(start_color[2] + (end_color[2] - start_color[2]) * (i / len(text)))
+        gradient += f"\033[38;2;{r};{g};{b}m{char}"
+    gradient += "\033[0m"
+    return gradient
+
+def cyan_to_white(text):
+    start_color = (0, 255, 255)  # Cyan
+    end_color = (255, 255, 255)  # White
+    gradient = ""
+    for i, char in enumerate(text):
+        r = int(start_color[0] + (end_color[0] - start_color[0]) * (i / len(text)))
+        g = int(start_color[1] + (end_color[1] - start_color[1]) * (i / len(text)))
+        b = int(start_color[2] + (end_color[2] - start_color[2]) * (i / len(text)))
+        gradient += f"\033[38;2;{r};{g};{b}m{char}"
+    gradient += "\033[0m"
+    return gradient
+
 def purple_to_green(text):
     start_color = (128, 0, 128)  # Purple
     end_color = (0, 255, 0)      # Green
@@ -1331,33 +1403,60 @@ def main():
                     runbanner()
 
         if command == "help":
-            print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "                                   ╦ ╦╔═╗╦  ╔═╗  ╔═╗╔═╗╔╦╗╔╦╗╔═╗╔╗╔╔╦╗╔═╗")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "                                   ╠═╣║╣ ║  ╠═╝  ║  ║ ║║║║║║║╠═╣║║║ ║║╚═╗")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "                                   ╩ ╩╚═╝╩═╝╩    ╚═╝╚═╝╩ ╩╩ ╩╩ ╩╝╚╝═╩╝╚═╝")}
-{white}                                       ⏾⋆.˚ 𝓑𝓮𝓼𝓽 𝓯𝓻𝓮𝓮 𝓭𝓭𝓸𝓼 𝓽𝓸𝓸𝓵   ⏾⋆.˚
-{Colorate.Horizontal(Colors.cyan_to_blue, "     ═╦══════════════════════════════╦══╦═════════════════════════════════════════════════════════╦═")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] secret ➤ Exit        {Colorate.Horizontal(Colors.cyan_to_blue, "    ║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}L4 {white}➤ .l4 <method> <ip> <threads> <duration> <port> {Colorate.Horizontal(Colors.cyan_to_blue, " ║")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] help ➤ Show help message {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}L7 {white}➤ .l7 <method> <url> <threads> <duration> <port> {Colorate.Horizontal(Colors.cyan_to_blue, "║")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] methods ➤ List methods   {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}H2 {white}➤ .h2 <method> <url> <time> <rate> <threads> {Colorate.Horizontal(Colors.cyan_to_blue, "    ║")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] menu ➤ Show the menu     {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {white}[●] {blue}GM {white}➤ .game <method> <ip> <threads> <time> <port> {Colorate.Horizontal(Colors.cyan_to_blue, "   ║")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "     ═╩══════════════════════════════╩══╩═════════════════════════════════════════════════════════╩═")}
+            print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "                ╦ ╦╔═╗╦  ╔═╗  ")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "                ╠═╣║╣ ║  ╠═╝  ")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "                ╩ ╩╚═╝╩═╝╩    ")}
+{white}       ⏾⋆.˚ 𝓑𝓮𝓼𝓽 𝓯𝓻𝓮𝓮 𝓭𝓭𝓸𝓼 𝓽𝓸𝓸𝓵   ⏾⋆.˚
+{Colorate.Horizontal(Colors.cyan_to_blue, "     ═╦══════════════════════════════╦═")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] secret ➤ Exit        {Colorate.Horizontal(Colors.cyan_to_blue, "    ║")} 
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] help ➤ Show help message {Colorate.Horizontal(Colors.cyan_to_blue, "║")} 
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] methods ➤ List methods   {Colorate.Horizontal(Colors.cyan_to_blue, "║")} 
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] menu ➤ Show the menu     {Colorate.Horizontal(Colors.cyan_to_blue, "║")} 
+{Colorate.Horizontal(Colors.cyan_to_blue, "     ═╩══════════════════════════════╩═")}
 """)
 
         elif command == "methods":
-            print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "                                          ╔╦╗╔═╗╔╦╗╦ ╦╔═╗╔╦╗╔═╗")} 
-{Colorate.Horizontal(Colors.cyan_to_blue, "                                          ║║║║╣  ║ ╠═╣║ ║ ║║╚═╗")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "                                          ╩ ╩╚═╝ ╩ ╩ ╩╚═╝═╩╝╚═╝")}
-{white}                                     ⏾⋆.˚ 𝓑𝓮𝓼𝓽 𝓯𝓻𝓮𝓮 𝓭𝓭𝓸𝓼 𝓽𝓸𝓸𝓵   ⏾⋆.˚
-{Colorate.Horizontal(Colors.cyan_to_blue, "       ʟᴀʏᴇʀ 4           ʟᴀʏᴇʀ 7         ʟᴀʏᴇʀ 7 ᴘᴛ.2         ʜᴛᴛᴘ/2            ɢᴀᴍᴇ            ꜱᴘᴇᴄɪᴀʟ")}    
-{Colorate.Horizontal(Colors.cyan_to_blue, "╚╦═════════════════╦═════════════════╦═════════════════╦═════════════════╦══════════════════╦══════════════╦╝")}
-{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}udpflood    {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}cc         {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}home       {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}h2-bypass  {Colorate.Horizontal(Colors.cyan_to_blue, "║ [●]")} {white}game-crash   {Colorate.Horizontal(Colors.cyan_to_blue, "║ [●]")} {white}discord  {Colorate.Horizontal(Colors.cyan_to_blue, "║")}          
-{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}tcpflood    {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}kill       {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}cfbypass   {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}h2-blast   {Colorate.Horizontal(Colors.cyan_to_blue, "║ [●]")} {white}lobby-flood  {Colorate.Horizontal(Colors.cyan_to_blue, "║ [●]")} {white}connect  {Colorate.Horizontal(Colors.cyan_to_blue, "║")}          
-{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}dns         {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}post       {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}tls        {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}h2-hold    {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                 ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "             ║")} 
-{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}udp-kill    {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}head       {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}ovh        {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}h2-godly   {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                 ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "             ║")}
-{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}icmp-blast  {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}uambypass  {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}dgb        {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}starxbypass{Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                 ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "             ║")}
-{Colorate.Horizontal(Colors.cyan_to_blue, " ║ [●]")} {white}syn-strike  {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}browser    {Colorate.Horizontal(Colors.cyan_to_blue, "║  [●]")} {white}http-storm {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                 ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "             ║")}
-{Colorate.Horizontal(Colors.cyan_to_blue, " ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                ║  [●]")} {white}api-killer {Colorate.Horizontal(Colors.cyan_to_blue, "║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "                 ║")} {Colorate.Horizontal(Colors.cyan_to_blue, "             ║")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "═╩═════════════════╩═════════════════╩═════════════════╩═════════════════╩══════════════════╩══════════════╩═")}
+            print(f"""
+{cyan_to_blue("╔══════════════════════════════╦════════════════════════════════════════════════════════╦═══════════════════════╗")}
+{cyan_to_blue("‖")} {cyan_to_pink("░░░░░░░░░░░░░░░░░░░░░░░░░░░░ ")}{cyan_to_blue("‖")} {gold_to_white("[LAYER 7]                                              ")}{cyan_to_blue("‖")} {gold_to_white("                      ")}{cyan_to_blue("‖")}
+{cyan_to_blue("║")} {cyan_to_pink("░")} {cyan_to_blue("╔══════════════════════╗")} {cyan_to_pink("░")}{cyan_to_blue(" ‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 cc........ ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 kill...... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 post...... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⠿⠿⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 head...... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⠏⠀⢐⣿⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 browser... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⡿⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 home...... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣇⠀⢰⣿⡌⠀⢹⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 tls....... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣶⣾⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 ovh....... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 http-storm ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 api-killer ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("╠══════════════════════╣")} {cyan_to_pink("░")} {cyan_to_blue("╠════════════════════════════════════════════════════════╬═══════════════════════╣")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║                      ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[LAYER 4]                                              ")}{cyan_to_blue("‖")} {gold_to_white("                      ")}{cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {blue(" 𝓦𝓮𝓵𝓬𝓸𝓶𝓮")} {pink("𝓽𝓸")} {pink("𝓛𝓾𝓷𝓪𝓻")} !  {cyan_to_blue("║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 udpflood.. ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║                      ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 tcpflood.. ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║                      ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 dns....... ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_pink(" Methods Working:")}    {cyan_to_blue("║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 udp-kill.. ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")}  {gold_to_white("  [L7]")} {cyan_to_pink("● online   ")}{cyan_to_blue("  ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 icmp-blast ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")}  {gold_to_white("  [L4]")} {cyan_to_pink("● online   ")}{cyan_to_blue("  ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 syn-strike ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")}  {gold_to_white("  [L2]")} {cyan_to_pink("● online   ")}{cyan_to_blue("  ║")} {cyan_to_pink("░")} {cyan_to_blue("╠════════════════════════════════════════════════════════╬═══════════════════════╣")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")}  {gold_to_white("  [GM]")} {cyan_to_pink("● online   ")}{cyan_to_blue("  ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[HTTP/2]                                               ")}{cyan_to_blue("‖")} {gold_to_white("                      ")}{cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")}  {gold_to_white("  [MC]")} {cyan_to_pink("● online   ")}{cyan_to_blue("  ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".h2 h2-blast.. ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")}  {gold_to_white("  [DS]")} {cyan_to_pink("● online   ")}{cyan_to_blue("  ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".h2 h2-hold... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("╠══════════════════════╣")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".h2 h2-godly.. ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║                      ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".h2 h2-bypass. ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_pink(" Telegram Channel:")}  {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".h2 starxbypass")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_white(" LunarSTRESS.t.me")}   {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("╠════════════════════════════════════════════════════════╬═══════════════════════╣")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("╠══════════════════════╣")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[GAME]                                                 ")}{cyan_to_blue("‖")} {gold_to_white("                      ")}{cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_pink("  Socials: ₊⁺☀︎₊⁺")}    {cyan_to_blue("║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".game game-crash ")}{cyan_to_pink("<ip> <threads> <duration> <port>")} {cyan_to_blue(" ‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {gold_to_white("  TT: @neonworid")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".game lobby-flood")}{cyan_to_pink("<ip> <threads> <duration> <port>")} {cyan_to_blue(" ‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {gold_to_white("  TG: @neonworid")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("╠════════════════════════════════════════════════════════╬═══════════════════════╣")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {gold_to_white("  TGC: @cursenet")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[MC]                                                   ")}{cyan_to_blue("‖")} {gold_to_white("                      ")}{cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║                      ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".connect.......          ")}{cyan_to_pink("                         ")} {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {gold_to_white("  MOD: @fuckbyba")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("╠════════════════════════════════════════════════════════╬═══════════════════════╣")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("╚══════════════════════╝")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[SPECIAL]                                              ")}{cyan_to_blue("‖")} {gold_to_white("                      ")}{cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░░░░░░░░░░░░░░░░░░░░░░░░░░░░")} {cyan_to_blue("‖")}{gold_to_white(" [●]")} {cyan_to_pink(".discord....... ")}{cyan_to_pink("<link> <threads> <duration> <port>")} {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("╠══════════════════════════════╬════════════════════════════════════════════════════════╩═══════════════════════╣")}
+{cyan_to_blue("‖")} {cyan_to_pink("░░░░░░░░░░░░░░░░░░░░░░░░░░░░")}{cyan_to_blue(" ‖")}{gold_to_white("[TIPS] We reccomend you to always use 2500 threads it is the most powerful")}{cyan_to_blue("      ‖")}
+{cyan_to_blue("╚══════════════════════════════╩════════════════════════════════════════════════════════╩═══════════════════════╝")}
 """)
 
         elif command == "plsletmego":
@@ -1486,24 +1585,23 @@ def main():
 
                 # Display attack summary (similar to the Launch function)
                 clearcs()
-                print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "             ╦  ╦ ╦╔╗╔╔═╗╦═╗")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "             ║  ║ ║║║║╠═╣╠╦╝")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "             ╩═╝╚═╝╝╚╝╩ ╩╩╚═𝔁𝓭")}
-{white}  ⏾⋆.˚ 𝓐𝓽𝓽𝓪𝓬𝓴 𝔀𝓪𝓼 𝓼𝓮𝓷𝓽 𝓼𝓾𝓬𝓬𝓮𝓼𝓼𝓯𝓾𝓵𝓵𝔂! ⏾⋆.˚
-{Colorate.Horizontal(Colors.cyan_to_blue, "┌───────────────────────────────────────────┐")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴀᴛᴛᴀᴄᴋ ꜱᴜᴍᴍᴀʀʏ
-{Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "🎯  ➤")}  {url.ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴍᴏᴅᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⚙️     ➤")}  {method.ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⌛    ➤")}  {str(time_duration).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ʀᴀᴛᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "⚡    ➤")}  {str(rate).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "⚔   ➤")}  {str(threads).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴘʀᴏxʏ ꜰ {Colorate.Horizontal(Colors.cyan_to_blue, "☣  ➤")}  {proxy_file.ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ɢɪᴛʜᴜʙ     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://github.com/Sakuzuna/
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} {white}ᴄʜᴇᴄᴋʜᴏꜱᴛ  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://check-host.net/check-http?host={url}
-{Colorate.Horizontal(Colors.cyan_to_blue, "└───────────────────────────────────────────┘")}
-""")
+                print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "             ╔═╗╔╦╗╔╦╗╔═╗╔═╗╦╔═")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "             ╠═╣ ║  ║ ╠═╣║  ╠╩╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "             ╩ ╩ ╩  ╩ ╩ ╩╚═╝╩ ╩")}
+{white}  ⋆.˚ ☾ .⭒˚ 𝓑𝓮𝓼𝓽 𝓬𝓱𝓮𝓪𝓹 𝓼𝓽𝓻𝓮𝓼𝓼𝓮𝓻 ⋆.˚ ☾ .⭒˚
+{Colorate.Horizontal(Colors.cyan_to_blue, "╔═══════════════════════════════════════════╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║")} {white}𝓐𝓽𝓽𝓪𝓬𝓴 𝓢𝓾𝓶𝓶𝓪𝓻𝔂 {Colorate.Horizontal(Colors.cyan_to_blue, "              ║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╦═══════════════════════════════════════╣")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'kill'] else url).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴍᴇᴛʜᴏᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {method.ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴘᴏʀᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "      ➤")}  {str(port).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "      ➤")}  {str(duration).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {str(threads).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╬═══════════════════════════════════════╣")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴀᴄᴄᴇꜱꜱ     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  VIP
+{Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╬═══════════════════════════════════════╣")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴄʜᴇᴄᴋʜᴏꜱᴛ  {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  https://check-host.net/check-http?host={(url if method in ['cc', 'post', 'head', 'uambypass', 'browser', 'home', 'cfbypass', 'tls', 'ovh', 'dgb', 'http-storm', 'api-killer', 'kill'] else url)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "╚═══╩═══════════════════════════════════════╝")}""")
 
                 # Run the attack using subprocess
                 try:
