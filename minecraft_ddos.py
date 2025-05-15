@@ -12,6 +12,11 @@ from urllib.request import urlopen
 from urllib.error import URLError
 from pystyle import Colorate, Colors
 import socks
+import colorama
+from colorama import Fore
+
+white = Fore.WHITE
+reset = Fore.RESET
 
 def play_ascii_video(video_path, frame_delay=1/128, duration=2.5):
     ASCII_CHARS = "█▇▆▅▄▃▂▁ "  
@@ -188,25 +193,24 @@ def run_attack(host, port, protocol_version, rate, duration):
     threads = []
 
     clearcs()
-    play_ascii_video("banner.mp4", duration=2.5)
-    print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "             ╦  ╦ ╦╔╗╔╔═╗╦═╗")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "             ║  ║ ║║║║╠═╣╠╦╝")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "             ╩═╝╚═╝╝╚╝╩ ╩╩╚═𝔁𝓭")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "> Attack was sent successfully!")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "┌───────────────────────────────────────────┐")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} Attack Summary
-{Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} Target 🎯  ➤  {f'{host}:{port}'.ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} Mode ⚙️     ➤  connect.ljust(30)
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} Time ⌛    ➤  {str(duration).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} Rate ⚔   ➤  {str(rate_limit) + ' conn/sec'.ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} Protocol ⦻  ➤  {str(protocol_version).ljust(30)}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} Proxy File ☣  ➤  proxies.txt.ljust(30)
-{Colorate.Horizontal(Colors.cyan_to_blue, "├────────────────────────────────────────────")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "│")} GitHub     ➤  https://github.com/Sakuzuna/
-{Colorate.Horizontal(Colors.cyan_to_blue, "└───────────────────────────────────────────┘")}
-""")
-
+    play_ascii_video("sent.mp4", duration=2.5)
+    print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "             ╔═╗╔╦╗╔╦╗╔═╗╔═╗╦╔═")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "             ╠═╣ ║  ║ ╠═╣║  ╠╩╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "             ╩ ╩ ╩  ╩ ╩ ╩╚═╝╩ ╩")}
+{white}  ⋆.˚ ☾ .⭒˚ 𝓑𝓮𝓼𝓽 𝓬𝓱𝓮𝓪𝓹 𝓼𝓽𝓻𝓮𝓼𝓼𝓮𝓻 ⋆.˚ ☾ .⭒˚
+{Colorate.Horizontal(Colors.cyan_to_blue, "╔═══════════════════════════════════════════╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║")} {white}𝓐𝓽𝓽𝓪𝓬𝓴 𝓢𝓾𝓶𝓶𝓪𝓻𝔂 {Colorate.Horizontal(Colors.cyan_to_blue, "                           ║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╦═══════════════════════════════════════╣")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {f'{host}:{port}'.ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴍᴇᴛʜᴏᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  connect
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, "      ➤")}  {str(duration).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, "    ➤")}  {str(rate_limit) + ' conn/sec'.ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴘʀᴏᴛᴏᴄᴏʟ {Colorate.Horizontal(Colors.cyan_to_blue, "  ➤")}  {str(protocol_version).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╬═══════════════════════════════════════╣")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║ ● ║")} {white}ᴀᴄᴄᴇꜱꜱ     {Colorate.Horizontal(Colors.cyan_to_blue, "➤")}  VIP
+{Colorate.Horizontal(Colors.cyan_to_blue, "╠═══╬═══════════════════════════════════════╣")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "╚═══╩═══════════════════════════════════════╝")}""")
+    
     event.set()
 
     for proxy in proxies:
