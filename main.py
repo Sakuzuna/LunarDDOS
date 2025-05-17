@@ -1545,7 +1545,7 @@ def main():
                     os.environ["duration"] = str(time_duration)
                     # Run the Go binary
                     try:
-                        subprocess.run(["./tcpflood"], check=True)
+                        subprocess.run(["go", "run", "tcpflood.go"], check=True)
                     except subprocess.CalledProcessError:
                         print(Colorate.Horizontal(Colors.cyan_to_blue, "> Failed to execute tcpflood. Ensure the Go binary is compiled and in the current directory."))
                     except FileNotFoundError:
